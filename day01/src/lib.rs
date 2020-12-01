@@ -56,11 +56,11 @@ use shrinkwraprs::Shrinkwrap;
 pub mod initial;
 pub use crate::initial::Day01Initial;
 
-#[derive(Debug, Shrinkwrap, PartialEq)]
-pub struct Day01Entry(usize);
+#[derive(Debug, Shrinkwrap, PartialEq, Ord, Eq, PartialOrd, Hash)]
+pub struct Day01Entry(u64);
 
-type Day01SolutionPart1 = i64;
-type Day01SolutionPart2 = i64;
+type Day01SolutionPart1 = u64;
+type Day01SolutionPart2 = u64;
 
 pub trait AoC<'a>: Debug {
     type SolutionPart1;
@@ -135,15 +135,25 @@ mod tests {
     fn parse() {
         init_logger();
 
-        unimplemented!();
-
-        let parsed: Vec<Day01Entry> = parse_input(PUZZLE_INPUT).collect();
-        assert_eq!(parsed.len(), 0);
+        let parsed: Vec<Day01Entry> = parse_input(
+            "1721
+            979
+            366
+            299
+            675
+            1456",
+        )
+        .collect();
+        assert_eq!(parsed.len(), 6);
         assert_eq!(
-            &parsed[0..5],
+            parsed,
             &[
-                //
-                Day01Entry(0),
+                Day01Entry(1721),
+                Day01Entry(979),
+                Day01Entry(366),
+                Day01Entry(299),
+                Day01Entry(675),
+                Day01Entry(1456),
             ]
         );
     }
