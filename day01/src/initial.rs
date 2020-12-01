@@ -1,3 +1,5 @@
+use std::collections::HashSet;
+
 use crate::*;
 
 #[derive(Debug)]
@@ -17,8 +19,23 @@ impl<'a> AoC<'a> for Day01Initial<'a> {
         Day01Initial { input }
     }
 
-    // fn solution_part1(&self) -> Self::SolutionPart1 {
-    // }
+    fn solution_part1(&self) -> Self::SolutionPart1 {
+        const SUM_TARGET: u64 = 2020;
+
+        // Double the memory
+        let entries: Vec<_> = parse_input(self.input).collect();
+        let entries_set: HashSet<_> = entries.iter().collect();
+
+        let left = entries
+            .iter()
+            .map(|e| Day01Entry(SUM_TARGET - e.0))
+            .find(|diff| entries_set.contains(diff))
+            .expect("At least one find");
+
+        let right = Day01Entry(SUM_TARGET - left.0);
+
+        left.0 * right.0
+    }
 
     // fn solution_part2(&self) -> Self::SolutionPart2 {
     // }
@@ -35,9 +52,7 @@ mod tests {
             fn solution() {
                 init_logger();
 
-                unimplemented!();
-
-                let expected = 0;
+                let expected = 545379;
                 let to_check = Day01Initial::new(PUZZLE_INPUT).solution_part1();
 
                 assert_eq!(to_check, expected);
@@ -52,10 +67,13 @@ mod tests {
             fn ex01() {
                 init_logger();
 
-                unimplemented!();
-
-                let expected = 0;
-                let input = "";
+                let expected = 514579;
+                let input = "1721
+                    979
+                    366
+                    299
+                    675
+                    1456";
                 let to_check = Day01Initial::new(input).solution_part1();
 
                 assert_eq!(to_check, expected);
@@ -70,6 +88,7 @@ mod tests {
         */
     }
 
+    /*
     mod part2 {
         mod solution {
             use super::super::super::*;
@@ -113,4 +132,5 @@ mod tests {
         }
         */
     }
+    */
 }
