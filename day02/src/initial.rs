@@ -17,8 +17,18 @@ impl<'a> AoC<'a> for Day02Initial<'a> {
         Day02Initial { input }
     }
 
-    // fn solution_part1(&self) -> Self::SolutionPart1 {
-    // }
+    fn solution_part1(&self) -> Self::SolutionPart1 {
+        parse_input(self.input)
+            .filter(|entry| {
+                let byte_count = entry
+                    .password
+                    .iter()
+                    .filter(|byte| **byte == entry.char)
+                    .count() as u8;
+                (entry.char_count.start() <= &byte_count) && (&byte_count <= entry.char_count.end())
+            })
+            .count()
+    }
 
     // fn solution_part2(&self) -> Self::SolutionPart2 {
     // }
@@ -35,9 +45,7 @@ mod tests {
             fn solution() {
                 init_logger();
 
-                unimplemented!();
-
-                let expected = 0;
+                let expected = 645;
                 let to_check = Day02Initial::new(PUZZLE_INPUT).solution_part1();
 
                 assert_eq!(to_check, expected);
@@ -52,10 +60,10 @@ mod tests {
             fn ex01() {
                 init_logger();
 
-                unimplemented!();
-
-                let expected = 0;
-                let input = "";
+                let expected = 2;
+                let input = "1-3 a: abcde
+                                1-3 b: cdefg
+                                2-9 c: ccccccccc";
                 let to_check = Day02Initial::new(input).solution_part1();
 
                 assert_eq!(to_check, expected);
