@@ -43,7 +43,10 @@ fn solution_part1(sum_target: u64, entries: &[Day01Entry]) -> Option<(Day01Entry
     // and the elements.
     entries
         .iter()
-        .map(|e| Day01Entry(sum_target - e.0))
+        .filter_map(|e| {
+            // Use a filter_map to prevent underflow
+            sum_target.checked_sub(e.0).map(Day01Entry)
+        })
         .find(|diff| entries_set.contains(diff))
         .map(|left| {
             // Now that we found the left element, the right one is the difference with the target
