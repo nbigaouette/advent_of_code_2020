@@ -51,6 +51,7 @@ pub trait AoC<'a>: Debug {
 pub fn parse_input<'a>(input: &'a str) -> impl Iterator<Item = DayXXEntry> + 'a {
     input
         .lines()
+        .map(str::trim)
         .map(|line| DayXXEntry(line.trim().parse().expect("Invalid entry")))
 }
 
