@@ -3,7 +3,7 @@
 Solutions to [Advent of Code - 2020](https://adventofcode.com/2020/) written
 in Rust (1.48).
 
-[![Build Status](https://github.com/nbigaouette/advent_of_code_2020/workflows/Rust/badge.svg?branch=master)](https://github.com/nbigaouette/advent_of_code_2020/actions)
+[![Build Status](https://github.com/nbigaouette/advent_of_code_2020/workflows/Rust/badge.svg?branch=main)](https://github.com/nbigaouette/advent_of_code_2020/actions)
 
 ## Rust
 
