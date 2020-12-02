@@ -32,7 +32,24 @@ impl<'a> AoC<'a> for Day01Initial<'a> {
         left.0 * right.0
     }
 
-    // fn solution_part2(&self) -> Self::SolutionPart2 {}
+    fn solution_part2(&self) -> Self::SolutionPart2 {
+        const SUM_TARGET: u64 = 2020;
+
+        // We search "left*middle*right" such that "left + middle + right == 2020"
+
+        // Store the whole input
+        let entries: Vec<_> = parse_input(self.input).collect();
+
+        for middle in &entries {
+            let target = SUM_TARGET - middle.0;
+            match solution_part1(target, &entries) {
+                None => continue,
+                Some((left, right)) => return left.0 * middle.0 * right.0,
+            }
+        }
+
+        0
+    }
 }
 
 fn solution_part1(sum_target: u64, entries: &[Day01Entry]) -> Option<(Day01Entry, Day01Entry)> {
@@ -105,7 +122,6 @@ mod tests {
         */
     }
 
-    /*
     mod part2 {
         mod solution {
             use super::super::super::*;
@@ -115,9 +131,7 @@ mod tests {
             fn solution() {
                 init_logger();
 
-                unimplemented!();
-
-                let expected = 0;
+                let expected = 257778836;
                 let to_check = Day01Initial::new(PUZZLE_INPUT).solution_part2();
 
                 assert_eq!(to_check, expected);
@@ -132,10 +146,13 @@ mod tests {
             fn ex01() {
                 init_logger();
 
-                unimplemented!();
-
-                let expected = 0;
-                let input = "";
+                let expected = 241861950;
+                let input = "1721
+                    979
+                    366
+                    299
+                    675
+                    1456";
                 let to_check = Day01Initial::new(input).solution_part2();
 
                 assert_eq!(to_check, expected);
@@ -149,5 +166,4 @@ mod tests {
         }
         */
     }
-    */
 }
