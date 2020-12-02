@@ -18,20 +18,20 @@ impl<'a> AoC<'a> for Day02Initial<'a> {
     }
 
     fn solution_part1(&self) -> Self::SolutionPart1 {
-        parse_input(self.input)
-            .filter(|entry| {
-                let byte_count = entry
-                    .password
-                    .iter()
-                    .filter(|byte| **byte == entry.char)
-                    .count() as u8;
-                (entry.char_count.start() <= &byte_count) && (&byte_count <= entry.char_count.end())
-            })
-            .count()
+        parse_input(self.input).filter(is_valid_part1).count()
     }
 
     // fn solution_part2(&self) -> Self::SolutionPart2 {
     // }
+}
+
+fn is_valid_part1(entry: &Day02Entry) -> bool {
+    let byte_count = entry
+        .password
+        .iter()
+        .filter(|byte| **byte == entry.char)
+        .count() as u8;
+    (entry.char_count.start() <= &byte_count) && (&byte_count <= entry.char_count.end())
 }
 
 #[cfg(test)]
