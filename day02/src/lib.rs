@@ -41,18 +41,21 @@
 //!
 //!
 
-use std::fmt::Debug;
+use std::{fmt::Debug, ops::RangeInclusive};
 
 pub use anyhow::{Context, Result};
-use shrinkwraprs::Shrinkwrap;
 
 pub mod initial;
 pub use crate::initial::Day02Initial;
 
-#[derive(Debug, Shrinkwrap, PartialEq)]
-pub struct Day02Entry(usize);
+#[derive(Debug, PartialEq)]
+pub struct Day02Entry {
+    char_count: RangeInclusive<u8>,
+    char: u8,
+    password: Vec<u8>,
+}
 
-type Day02SolutionPart1 = i64;
+type Day02SolutionPart1 = usize;
 type Day02SolutionPart2 = i64;
 
 pub trait AoC<'a>: Debug {
@@ -77,9 +80,38 @@ pub trait AoC<'a>: Debug {
 }
 
 pub fn parse_input<'a>(input: &'a str) -> impl Iterator<Item = Day02Entry> + 'a {
-    input
-        .lines()
-        .map(|line| Day02Entry(line.trim().parse().expect("Invalid entry")))
+    input.lines().map(str::trim).map(|line| {
+        let mut components = line.split(' ');
+        let count_range = components
+            .next()
+            .expect("Failed to get count range component");
+        let char_str = components.next().expect("Failed to get char component");
+        let password = components.next().expect("Failed to get password component");
+
+        let mut count_range_components = count_range.split('-');
+        let char_count = RangeInclusive::new(
+            count_range_components
+                .next()
+                .expect("Failed to first part of range")
+                .parse::<u8>()
+                .expect("Failed to convert to u8"),
+            count_range_components
+                .next()
+                .expect("Failed to second part of range")
+                .parse::<u8>()
+                .expect("Failed to convert to u8"),
+        );
+
+        let char = char_str.as_bytes()[0];
+
+        let password = password.bytes().collect();
+
+        Day02Entry {
+            char_count,
+            char,
+            password,
+        }
+    })
 }
 
 pub static PUZZLE_INPUT: &str = include_str!("../input");
@@ -128,15 +160,31 @@ mod tests {
     fn parse() {
         init_logger();
 
-        unimplemented!();
-
-        let parsed: Vec<Day02Entry> = parse_input(PUZZLE_INPUT).collect();
-        assert_eq!(parsed.len(), 0);
+        let parsed: Vec<Day02Entry> = parse_input(
+            "1-3 a: abcde
+            1-3 b: cdefg
+            2-9 c: ccccccccc",
+        )
+        .collect();
+        assert_eq!(parsed.len(), 3);
         assert_eq!(
-            &parsed[0..5],
+            parsed,
             &[
-                //
-                Day02Entry(0),
+                Day02Entry {
+                    char_count: RangeInclusive::new(1, 3),
+                    char: b'a',
+                    password: vec![b'a', b'b', b'c', b'd', b'e']
+                },
+                Day02Entry {
+                    char_count: RangeInclusive::new(1, 3),
+                    char: b'b',
+                    password: vec![b'c', b'd', b'e', b'f', b'g']
+                },
+                Day02Entry {
+                    char_count: RangeInclusive::new(2, 9),
+                    char: b'c',
+                    password: vec![b'c', b'c', b'c', b'c', b'c', b'c', b'c', b'c', b'c']
+                },
             ]
         );
     }
