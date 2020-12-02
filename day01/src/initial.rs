@@ -22,17 +22,25 @@ impl<'a> AoC<'a> for Day01Initial<'a> {
     fn solution_part1(&self) -> Self::SolutionPart1 {
         const SUM_TARGET: u64 = 2020;
 
-        // Double the memory
+        // We search "left*right" such that "left + right == 2020"
+
+        // Store the whole input
         let entries: Vec<_> = parse_input(self.input).collect();
+        // Copy into a hashset to test presence
         let entries_set: HashSet<_> = entries.iter().collect();
 
+        // Find the presence in the hashset of the difference between the target number
+        // and the elements.
         let left = entries
             .iter()
             .map(|e| Day01Entry(SUM_TARGET - e.0))
             .find(|diff| entries_set.contains(diff))
             .expect("At least one find");
 
+        // Now that we found the left element, the right one is the difference with the target
         let right = Day01Entry(SUM_TARGET - left.0);
+
+        assert_eq!(left.0 + right.0, SUM_TARGET);
 
         left.0 * right.0
     }
