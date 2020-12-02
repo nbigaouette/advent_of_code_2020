@@ -75,7 +75,7 @@ pub struct Day02Entry {
 }
 
 type Day02SolutionPart1 = usize;
-type Day02SolutionPart2 = i64;
+type Day02SolutionPart2 = usize;
 
 pub trait AoC<'a>: Debug {
     type SolutionPart1;
