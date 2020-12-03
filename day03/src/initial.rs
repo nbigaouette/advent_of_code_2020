@@ -31,7 +31,7 @@ impl<'a> AoC<'a> for Day03Initial<'a> {
         ]
         .iter()
         .map(|slope| count_trees_on_slope(slope, self.input))
-        .fold(1, |acc, count| acc * count)
+        .product()
     }
 }
 
