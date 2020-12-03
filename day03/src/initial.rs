@@ -21,13 +21,25 @@ impl<'a> AoC<'a> for Day03Initial<'a> {
         count_trees_on_slope(&Slope { down: 1, right: 3 }, self.input)
     }
 
+    fn solution_part2(&self) -> Self::SolutionPart2 {
+        [
+            Slope { right: 1, down: 1 },
+            Slope { right: 3, down: 1 },
+            Slope { right: 5, down: 1 },
+            Slope { right: 7, down: 1 },
+            Slope { right: 1, down: 2 },
+        ]
+        .iter()
+        .map(|slope| count_trees_on_slope(slope, self.input))
+        .fold(1, |acc, count| acc * count)
+    }
+}
+
 struct Slope {
     down: usize,
     right: usize,
 }
 
-    // fn solution_part2(&self) -> Self::SolutionPart2 {
-    // }
 fn count_trees_on_slope(slope: &Slope, input: &str) -> usize {
     parse_input(input)
         .step_by(slope.down)
@@ -106,9 +118,7 @@ mod tests {
             fn solution() {
                 init_logger();
 
-                unimplemented!();
-
-                let expected = 0;
+                let expected = 9533698720;
                 let to_check = Day03Initial::new(PUZZLE_INPUT).solution_part2();
 
                 assert_eq!(to_check, expected);
@@ -123,10 +133,20 @@ mod tests {
             fn ex01() {
                 init_logger();
 
-                unimplemented!();
-
-                let expected = 0;
-                let input = "";
+                let expected = 336;
+                let input = "
+                    ..##.......
+                    #...#...#..
+                    .#....#..#.
+                    ..#.#...#.#
+                    .#...##..#.
+                    ..#.##.....
+                    .#.#.#....#
+                    .#........#
+                    #.##...#...
+                    #...##....#
+                    .#..#...#.#
+                ";
                 let to_check = Day03Initial::new(input).solution_part2();
 
                 assert_eq!(to_check, expected);
