@@ -208,6 +208,9 @@
 <span id="205">205</span>
 <span id="206">206</span>
 <span id="207">207</span>
+<span id="208">208</span>
+<span id="209">209</span>
+<span id="210">210</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! # Day 02: Password Philosophy</span>
 <span class="doccomment">//!</span>
@@ -311,30 +314,33 @@
 
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">parse_input</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="ident">input</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">str</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw">impl</span> <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="ident">Day02Entry</span><span class="op">&gt;</span> <span class="op">+</span> <span class="lifetime">&#39;a</span> {
     <span class="ident">input</span>.<span class="ident">lines</span>().<span class="ident">map</span>(<span class="ident">str</span>::<span class="ident">trim</span>).<span class="ident">map</span>(<span class="op">|</span><span class="ident">line</span><span class="op">|</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">components</span> <span class="op">=</span> <span class="ident">line</span>.<span class="ident">split</span>(<span class="string">&#39; &#39;</span>);
-        <span class="kw">let</span> <span class="ident">count_range</span> <span class="op">=</span> <span class="ident">components</span>
-            .<span class="ident">next</span>()
-            .<span class="ident">expect</span>(<span class="string">&quot;Failed to get count range component&quot;</span>);
-        <span class="kw">let</span> <span class="ident">char_str</span> <span class="op">=</span> <span class="ident">components</span>.<span class="ident">next</span>().<span class="ident">expect</span>(<span class="string">&quot;Failed to get char component&quot;</span>);
-        <span class="kw">let</span> <span class="ident">password</span> <span class="op">=</span> <span class="ident">components</span>.<span class="ident">next</span>().<span class="ident">expect</span>(<span class="string">&quot;Failed to get password component&quot;</span>);
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">components</span> <span class="op">=</span> <span class="ident">line</span>.<span class="ident">split</span>([<span class="string">&#39; &#39;</span>, <span class="string">&#39;:&#39;</span>, <span class="string">&#39;-&#39;</span>].<span class="ident">as_ref</span>());
 
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">count_range_components</span> <span class="op">=</span> <span class="ident">count_range</span>.<span class="ident">split</span>(<span class="string">&#39;-&#39;</span>);
         <span class="kw">let</span> <span class="ident">char_count</span> <span class="op">=</span> <span class="ident">RangeInclusive</span>::<span class="ident">new</span>(
-            <span class="ident">count_range_components</span>
+            <span class="ident">components</span>
                 .<span class="ident">next</span>()
                 .<span class="ident">expect</span>(<span class="string">&quot;Failed to first part of range&quot;</span>)
                 .<span class="ident">parse</span>::<span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>()
                 .<span class="ident">expect</span>(<span class="string">&quot;Failed to convert to u8&quot;</span>),
-            <span class="ident">count_range_components</span>
+            <span class="ident">components</span>
                 .<span class="ident">next</span>()
                 .<span class="ident">expect</span>(<span class="string">&quot;Failed to second part of range&quot;</span>)
                 .<span class="ident">parse</span>::<span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>()
                 .<span class="ident">expect</span>(<span class="string">&quot;Failed to convert to u8&quot;</span>),
         );
 
-        <span class="kw">let</span> <span class="ident">char</span> <span class="op">=</span> <span class="ident">char_str</span>.<span class="ident">as_bytes</span>()[<span class="number">0</span>];
-
-        <span class="kw">let</span> <span class="ident">password</span> <span class="op">=</span> <span class="ident">password</span>.<span class="ident">bytes</span>().<span class="ident">collect</span>();
+        <span class="kw">let</span> <span class="ident">char</span> <span class="op">=</span> <span class="ident">components</span>
+            .<span class="ident">next</span>()
+            .<span class="ident">expect</span>(<span class="string">&quot;Failed to get char component&quot;</span>)
+            .<span class="ident">as_bytes</span>()[<span class="number">0</span>];
+        <span class="comment">// Input contains &quot;: &quot; between letter and password. The split() call</span>
+        <span class="comment">// will create an empty component, let&#39;s skip it here.</span>
+        <span class="ident">components</span>.<span class="ident">next</span>();
+        <span class="kw">let</span> <span class="ident">password</span> <span class="op">=</span> <span class="ident">components</span>
+            .<span class="ident">next</span>()
+            .<span class="ident">expect</span>(<span class="string">&quot;Failed to get password component&quot;</span>)
+            .<span class="ident">bytes</span>()
+            .<span class="ident">collect</span>();
 
         <span class="ident">Day02Entry</span> {
             <span class="ident">char_count</span>,
