@@ -1,4 +1,5 @@
 (function() {var implementors = {};
 implementors["day01"] = [{"text":"impl RefUnwindSafe for Day01Entry","synthetic":true,"types":[]},{"text":"impl&lt;'a&gt; RefUnwindSafe for Day01Initial&lt;'a&gt;","synthetic":true,"types":[]}];
 implementors["day02"] = [{"text":"impl&lt;'a&gt; RefUnwindSafe for Day02Entry&lt;'a&gt;","synthetic":true,"types":[]},{"text":"impl&lt;'a&gt; RefUnwindSafe for Day02Initial&lt;'a&gt;","synthetic":true,"types":[]}];
+implementors["day03"] = [{"text":"impl&lt;'a&gt; RefUnwindSafe for ForestLine&lt;'a&gt;","synthetic":true,"types":[]},{"text":"impl RefUnwindSafe for ForestSquare","synthetic":true,"types":[]},{"text":"impl&lt;'a&gt; RefUnwindSafe for Day03Initial&lt;'a&gt;","synthetic":true,"types":[]}];
 if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()
