@@ -100,30 +100,33 @@ pub trait AoC<'a>: Debug {
 
 pub fn parse_input<'a>(input: &'a str) -> impl Iterator<Item = Day02Entry> + 'a {
     input.lines().map(str::trim).map(|line| {
-        let mut components = line.split(' ');
-        let count_range = components
-            .next()
-            .expect("Failed to get count range component");
-        let char_str = components.next().expect("Failed to get char component");
-        let password = components.next().expect("Failed to get password component");
+        let mut components = line.split([' ', ':', '-'].as_ref());
 
-        let mut count_range_components = count_range.split('-');
         let char_count = RangeInclusive::new(
-            count_range_components
+            components
                 .next()
                 .expect("Failed to first part of range")
                 .parse::<u8>()
                 .expect("Failed to convert to u8"),
-            count_range_components
+            components
                 .next()
                 .expect("Failed to second part of range")
                 .parse::<u8>()
                 .expect("Failed to convert to u8"),
         );
 
-        let char = char_str.as_bytes()[0];
-
-        let password = password.bytes().collect();
+        let char = components
+            .next()
+            .expect("Failed to get char component")
+            .as_bytes()[0];
+        // Input contains ": " between letter and password. The split() call
+        // will create an empty component, let's skip it here.
+        components.next();
+        let password = components
+            .next()
+            .expect("Failed to get password component")
+            .bytes()
+            .collect();
 
         Day02Entry {
             char_count,
