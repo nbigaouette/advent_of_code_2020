@@ -32,12 +32,12 @@ fn is_valid_part1(entry: &Day02Entry) -> bool {
         .iter()
         .filter(|byte| **byte == entry.char)
         .count() as u8;
-    (entry.char_count.start() <= &byte_count) && (&byte_count <= entry.char_count.end())
+    (entry.index_lower <= byte_count) && (byte_count <= entry.index_upper)
 }
 
 fn is_valid_part2(entry: &Day02Entry) -> bool {
-    let i0 = (*entry.char_count.start() as usize) - 1;
-    let i1 = (*entry.char_count.end() as usize) - 1;
+    let i0 = (entry.index_lower as usize) - 1;
+    let i1 = (entry.index_upper as usize) - 1;
     let first_char: bool = entry.password[i0] == entry.char;
     let second_char: bool = entry.password[i1] == entry.char;
 

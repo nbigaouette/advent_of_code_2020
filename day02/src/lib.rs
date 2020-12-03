@@ -60,7 +60,7 @@
 //! _How many passwords are valid_ according to the new interpretation of the policies?
 //!
 
-use std::{fmt::Debug, ops::RangeInclusive};
+use std::fmt::Debug;
 
 pub use anyhow::{Context, Result};
 
@@ -69,7 +69,8 @@ pub use crate::initial::Day02Initial;
 
 #[derive(Debug, PartialEq)]
 pub struct Day02Entry {
-    char_count: RangeInclusive<u8>,
+    index_lower: u8,
+    index_upper: u8,
     char: u8,
     password: Vec<u8>,
 }
@@ -102,18 +103,16 @@ pub fn parse_input<'a>(input: &'a str) -> impl Iterator<Item = Day02Entry> + 'a 
     input.lines().map(str::trim).map(|line| {
         let mut components = line.split([' ', ':', '-'].as_ref());
 
-        let char_count = RangeInclusive::new(
-            components
-                .next()
-                .expect("Failed to first part of range")
-                .parse::<u8>()
-                .expect("Failed to convert to u8"),
-            components
-                .next()
-                .expect("Failed to second part of range")
-                .parse::<u8>()
-                .expect("Failed to convert to u8"),
-        );
+        let index_lower = components
+            .next()
+            .expect("Failed to first part of range")
+            .parse::<u8>()
+            .expect("Failed to convert to u8");
+        let index_upper = components
+            .next()
+            .expect("Failed to second part of range")
+            .parse::<u8>()
+            .expect("Failed to convert to u8");
 
         let char = components
             .next()
@@ -129,7 +128,8 @@ pub fn parse_input<'a>(input: &'a str) -> impl Iterator<Item = Day02Entry> + 'a 
             .collect();
 
         Day02Entry {
-            char_count,
+            index_lower,
+            index_upper,
             char,
             password,
         }
@@ -190,17 +190,20 @@ mod tests {
             parsed,
             &[
                 Day02Entry {
-                    char_count: RangeInclusive::new(1, 3),
+                    index_lower: 1,
+                    index_upper: 3,
                     char: b'a',
                     password: vec![b'a', b'b', b'c', b'd', b'e']
                 },
                 Day02Entry {
-                    char_count: RangeInclusive::new(1, 3),
+                    index_lower: 1,
+                    index_upper: 3,
                     char: b'b',
                     password: vec![b'c', b'd', b'e', b'f', b'g']
                 },
                 Day02Entry {
-                    char_count: RangeInclusive::new(2, 9),
+                    index_lower: 2,
+                    index_upper: 9,
                     char: b'c',
                     password: vec![b'c', b'c', b'c', b'c', b'c', b'c', b'c', b'c', b'c']
                 },
