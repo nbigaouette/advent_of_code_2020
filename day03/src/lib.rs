@@ -83,16 +83,31 @@
 use std::fmt::Debug;
 
 pub use anyhow::{Context, Result};
-use shrinkwraprs::Shrinkwrap;
 
 pub mod initial;
 pub use crate::initial::Day03Initial;
 
-#[derive(Debug, Shrinkwrap, PartialEq)]
-pub struct Day03Entry(usize);
+#[derive(PartialEq, Debug)]
+pub enum ForestSquare {
+    Open,
+    Tree,
+}
 
-type Day03SolutionPart1 = i64;
-type Day03SolutionPart2 = i64;
+#[derive(PartialEq, Debug)]
+pub struct ForestLine<'a>(&'a str);
+
+impl<'a> ForestLine<'a> {
+    fn iter(&'a self) -> impl Iterator<Item = ForestSquare> + 'a {
+        self.0.bytes().cycle().map(|b| match b {
+            b'.' => ForestSquare::Open,
+            b'#' => ForestSquare::Tree,
+            _ => unreachable!(),
+        })
+    }
+}
+
+type Day03SolutionPart1 = u64;
+type Day03SolutionPart2 = u64;
 
 pub trait AoC<'a>: Debug {
     type SolutionPart1;
@@ -115,11 +130,8 @@ pub trait AoC<'a>: Debug {
     }
 }
 
-pub fn parse_input<'a>(input: &'a str) -> impl Iterator<Item = Day03Entry> + 'a {
-    input
-        .lines()
-        .map(str::trim)
-        .map(|line| Day03Entry(line.trim().parse().expect("Invalid entry")))
+pub fn parse_input<'a>(input: &'a str) -> impl Iterator<Item = ForestLine> + 'a {
+    input.trim().lines().map(str::trim).map(ForestLine)
 }
 
 pub static PUZZLE_INPUT: &str = include_str!("../input");
@@ -165,18 +177,81 @@ mod tests {
     }
 
     #[test]
+    fn parse_square() {
+        init_logger();
+
+        assert_eq!(ForestLine(".").iter().next().unwrap(), ForestSquare::Open);
+        assert_eq!(ForestLine("#").iter().next().unwrap(), ForestSquare::Tree);
+    }
+
+    #[test]
     fn parse() {
         init_logger();
 
-        unimplemented!();
+        let input = "
+            ..##.......
+            #...#...#..
+            .#....#..#.
+            ..#.#...#.#
+            .#...##..#.
+            ..#.##.....
+            .#.#.#....#
+            .#........#
+            #.##...#...
+            #...##....#
+            .#..#...#.#
+        ";
 
-        let parsed: Vec<Day03Entry> = parse_input(PUZZLE_INPUT).collect();
-        assert_eq!(parsed.len(), 0);
+        let parsed: Vec<_> = parse_input(input).collect();
+
         assert_eq!(
-            &parsed[0..5],
-            &[
-                //
-                Day03Entry(0),
+            parsed,
+            vec![
+                ForestLine("..##......."),
+                ForestLine("#...#...#.."),
+                ForestLine(".#....#..#."),
+                ForestLine("..#.#...#.#"),
+                ForestLine(".#...##..#."),
+                ForestLine("..#.##....."),
+                ForestLine(".#.#.#....#"),
+                ForestLine(".#........#"),
+                ForestLine("#.##...#..."),
+                ForestLine("#...##....#"),
+                ForestLine(".#..#...#.#"),
+            ]
+        );
+
+        assert_eq!(
+            parsed[0].iter().take(11).collect::<Vec<_>>(),
+            vec![
+                ForestSquare::Open,
+                ForestSquare::Open,
+                ForestSquare::Tree,
+                ForestSquare::Tree,
+                ForestSquare::Open,
+                ForestSquare::Open,
+                ForestSquare::Open,
+                ForestSquare::Open,
+                ForestSquare::Open,
+                ForestSquare::Open,
+                ForestSquare::Open,
+            ]
+        );
+
+        assert_eq!(
+            parsed[1].iter().take(11).collect::<Vec<_>>(),
+            vec![
+                ForestSquare::Tree,
+                ForestSquare::Open,
+                ForestSquare::Open,
+                ForestSquare::Open,
+                ForestSquare::Tree,
+                ForestSquare::Open,
+                ForestSquare::Open,
+                ForestSquare::Open,
+                ForestSquare::Tree,
+                ForestSquare::Open,
+                ForestSquare::Open,
             ]
         );
     }
