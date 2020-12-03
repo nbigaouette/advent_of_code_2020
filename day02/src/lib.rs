@@ -68,11 +68,11 @@ pub mod initial;
 pub use crate::initial::Day02Initial;
 
 #[derive(Debug, PartialEq)]
-pub struct Day02Entry {
+pub struct Day02Entry<'a> {
     index_lower: u8,
     index_upper: u8,
     char: u8,
-    password: Vec<u8>,
+    password: &'a str,
 }
 
 type Day02SolutionPart1 = usize;
@@ -121,11 +121,7 @@ pub fn parse_input<'a>(input: &'a str) -> impl Iterator<Item = Day02Entry> + 'a 
         // Input contains ": " between letter and password. The split() call
         // will create an empty component, let's skip it here.
         components.next();
-        let password = components
-            .next()
-            .expect("Failed to get password component")
-            .bytes()
-            .collect();
+        let password = components.next().expect("Failed to get password component");
 
         Day02Entry {
             index_lower,
@@ -193,19 +189,19 @@ mod tests {
                     index_lower: 1,
                     index_upper: 3,
                     char: b'a',
-                    password: vec![b'a', b'b', b'c', b'd', b'e']
+                    password: "abcde"
                 },
                 Day02Entry {
                     index_lower: 1,
                     index_upper: 3,
                     char: b'b',
-                    password: vec![b'c', b'd', b'e', b'f', b'g']
+                    password: "cdefg"
                 },
                 Day02Entry {
                     index_lower: 2,
                     index_upper: 9,
                     char: b'c',
-                    password: vec![b'c', b'c', b'c', b'c', b'c', b'c', b'c', b'c', b'c']
+                    password: "ccccccccc"
                 },
             ]
         );

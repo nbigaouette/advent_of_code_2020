@@ -29,6 +29,7 @@ impl<'a> AoC<'a> for Day02Initial<'a> {
 fn is_valid_part1(entry: &Day02Entry) -> bool {
     let byte_count = entry
         .password
+        .as_bytes()
         .iter()
         .filter(|byte| **byte == entry.char)
         .count() as u8;
@@ -38,10 +39,13 @@ fn is_valid_part1(entry: &Day02Entry) -> bool {
 fn is_valid_part2(entry: &Day02Entry) -> bool {
     let i0 = (entry.index_lower as usize) - 1;
     let i1 = (entry.index_upper as usize) - 1;
-    let first_char: bool = entry.password[i0] == entry.char;
-    let second_char: bool = entry.password[i1] == entry.char;
 
-    first_char ^ second_char // XOR
+    let password = entry.password.as_bytes();
+
+    let first = password.get(i0).map(|c| *c == entry.char).unwrap_or(false);
+    let second = password.get(i1).map(|c| *c == entry.char).unwrap_or(false);
+
+    first ^ second // XOR
 }
 
 #[cfg(test)]
