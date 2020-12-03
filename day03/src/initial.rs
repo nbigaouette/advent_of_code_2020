@@ -17,11 +17,30 @@ impl<'a> AoC<'a> for Day03Initial<'a> {
         Day03Initial { input }
     }
 
-    // fn solution_part1(&self) -> Self::SolutionPart1 {
-    // }
+    fn solution_part1(&self) -> Self::SolutionPart1 {
+        count_trees_on_slope(&Slope { down: 1, right: 3 }, self.input)
+    }
+
+struct Slope {
+    down: usize,
+    right: usize,
+}
 
     // fn solution_part2(&self) -> Self::SolutionPart2 {
     // }
+fn count_trees_on_slope(slope: &Slope, input: &str) -> usize {
+    parse_input(input)
+        .step_by(slope.down)
+        .skip(1) // We don't start on first line
+        .enumerate()
+        .map(|(down_count, line)| {
+            line.iter()
+                .skip(down_count * slope.right + 1)
+                .nth(slope.right - 1)
+                .expect("Cycle iterator should always provide a value")
+        })
+        .filter(|square| *square == ForestSquare::Tree)
+        .count()
 }
 
 #[cfg(test)]
@@ -35,9 +54,7 @@ mod tests {
             fn solution() {
                 init_logger();
 
-                unimplemented!();
-
-                let expected = 0;
+                let expected = 230;
                 let to_check = Day03Initial::new(PUZZLE_INPUT).solution_part1();
 
                 assert_eq!(to_check, expected);
@@ -52,10 +69,20 @@ mod tests {
             fn ex01() {
                 init_logger();
 
-                unimplemented!();
-
-                let expected = 0;
-                let input = "";
+                let expected = 7;
+                let input = "
+                    ..##.......
+                    #...#...#..
+                    .#....#..#.
+                    ..#.#...#.#
+                    .#...##..#.
+                    ..#.##.....
+                    .#.#.#....#
+                    .#........#
+                    #.##...#...
+                    #...##....#
+                    .#..#...#.#
+                ";
                 let to_check = Day03Initial::new(input).solution_part1();
 
                 assert_eq!(to_check, expected);

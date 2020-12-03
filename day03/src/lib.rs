@@ -106,8 +106,8 @@ impl<'a> ForestLine<'a> {
     }
 }
 
-type Day03SolutionPart1 = u64;
 type Day03SolutionPart2 = u64;
+type Day03SolutionPart1 = usize;
 
 pub trait AoC<'a>: Debug {
     type SolutionPart1;
