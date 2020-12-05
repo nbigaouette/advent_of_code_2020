@@ -261,8 +261,8 @@ dependencies = [
  "anyhow",
  "criterion",
  "env_logger",
+ "log",
  "pretty_assertions",
- "shrinkwraprs",
 ]
 
 [[package]]
