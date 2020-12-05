@@ -79,7 +79,6 @@ pub mod benchmark {
 mod tests {
     use std::env;
 
-    use env_logger;
     use pretty_assertions::assert_eq;
 
     use super::*;
