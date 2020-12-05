@@ -67,16 +67,15 @@
 use std::fmt::Debug;
 
 pub use anyhow::{Context, Result};
-use shrinkwraprs::Shrinkwrap;
 
 pub mod initial;
 pub use crate::initial::Day05Initial;
 
-#[derive(Debug, Shrinkwrap, PartialEq)]
-pub struct Day05Entry(usize);
+#[derive(Debug, PartialEq)]
+pub struct Day05Entry<'a>(Direction<'a>);
 
-type Day05SolutionPart1 = i64;
-type Day05SolutionPart2 = i64;
+type Day05SolutionPart1 = usize;
+type Day05SolutionPart2 = usize;
 
 pub trait AoC<'a>: Debug {
     type SolutionPart1;
@@ -99,11 +98,70 @@ pub trait AoC<'a>: Debug {
     }
 }
 
+#[derive(Debug, PartialEq)]
+pub enum DirectionRow {
+    Front,
+    Back,
+}
+
+#[derive(Debug, PartialEq)]
+pub enum DirectionColumn {
+    Left,
+    Right,
+}
+
+#[derive(Debug, PartialEq)]
+pub struct DirectionRowIterator<'a> {
+    directions: &'a [u8],
+}
+
+#[derive(Debug, PartialEq)]
+pub struct DirectionColumnIterator<'a> {
+    directions: &'a [u8],
+}
+
+impl<'a> DirectionRowIterator<'a> {
+    fn iter(&'a self) -> impl Iterator<Item = DirectionRow> + 'a {
+        self.directions.iter().map(|b| match b {
+            b'F' => DirectionRow::Front,
+            b'B' => DirectionRow::Back,
+            _ => unreachable!(),
+        })
+    }
+}
+
+impl<'a> DirectionColumnIterator<'a> {
+    fn iter(&'a self) -> impl Iterator<Item = DirectionColumn> + 'a {
+        self.directions.iter().map(|b| match b {
+            b'L' => DirectionColumn::Left,
+            b'R' => DirectionColumn::Right,
+            _ => unreachable!(),
+        })
+    }
+}
+
+#[derive(Debug, PartialEq)]
+pub struct Direction<'a> {
+    line: &'a str,
+    row_iter: DirectionRowIterator<'a>,
+    col_iter: DirectionColumnIterator<'a>,
+}
+
 pub fn parse_input<'a>(input: &'a str) -> impl Iterator<Item = Day05Entry> + 'a {
-    input
-        .lines()
-        .map(str::trim)
-        .map(|line| Day05Entry(line.trim().parse().expect("Invalid entry")))
+    input.trim().lines().map(str::trim).map(|line| {
+        let (split_left, split_right) = line.as_bytes().split_at(7);
+        let row_iter = DirectionRowIterator {
+            directions: split_left,
+        };
+        let col_iter = DirectionColumnIterator {
+            directions: split_right,
+        };
+        Day05Entry(Direction {
+            line,
+            row_iter,
+            col_iter,
+        })
+    })
 }
 
 pub static PUZZLE_INPUT: &str = include_str!("../input");
@@ -148,18 +206,45 @@ mod tests {
     }
 
     #[test]
-    fn parse() {
+    fn parse_single() {
         init_logger();
 
-        unimplemented!();
-
-        let parsed: Vec<Day05Entry> = parse_input(PUZZLE_INPUT).collect();
-        assert_eq!(parsed.len(), 0);
+        let parsed: Vec<Day05Entry> = parse_input("FBFBBFFRLR").collect();
+        assert_eq!(parsed.len(), 1);
         assert_eq!(
-            &parsed[0..5],
-            &[
-                //
-                Day01Entry(0),
+            parsed,
+            &[Day05Entry(Direction {
+                line: "FBFBBFFRLR",
+                row_iter: DirectionRowIterator {
+                    directions: b"FBFBBFF"
+                },
+                col_iter: DirectionColumnIterator { directions: b"RLR" },
+            }),]
+        );
+
+        assert_eq!(
+            parsed[0].0.row_iter.iter().collect::<Vec<DirectionRow>>(),
+            vec![
+                DirectionRow::Front,
+                DirectionRow::Back,
+                DirectionRow::Front,
+                DirectionRow::Back,
+                DirectionRow::Back,
+                DirectionRow::Front,
+                DirectionRow::Front
+            ]
+        );
+
+        assert_eq!(
+            parsed[0]
+                .0
+                .col_iter
+                .iter()
+                .collect::<Vec<DirectionColumn>>(),
+            vec![
+                DirectionColumn::Right,
+                DirectionColumn::Left,
+                DirectionColumn::Right,
             ]
         );
     }
