@@ -108,7 +108,7 @@ mod tests {
             &parsed[0..5],
             &[
                 //
-                Day01Entry(0),
+                DayXXEntry(0),
             ]
         );
     }
