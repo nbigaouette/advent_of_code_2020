@@ -1,0 +1,131 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="API documentation for the Rust `day04` crate."><meta name="keywords" content="rust, rustlang, rust-lang, day04"><title>day04 - Rust</title><link rel="stylesheet" type="text/css" href="../normalize.css"><link rel="stylesheet" type="text/css" href="../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../ayu.css" disabled ><script src="../storage.js"></script><noscript><link rel="stylesheet" href="../noscript.css"></noscript><link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="alternate icon" type="image/png" href="../favicon-16x16.png">
+<link rel="alternate icon" type="image/png" href="../favicon-32x32.png"><style type="text/css">#crate-search{background-image:url("../down-arrow.svg");}</style></head><body class="rustdoc mod"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../day04/index.html'><div class='logo-container rust-logo'><img src='../rust-logo.png' alt='logo'></div></a><p class='location'>Crate day04</p><div class='block version'><p>Version 0.1.0</p></div><div class="sidebar-elems"><a id='all-types' href='all.html'><p>See all day04's items</p></a><div class="block items"><ul><li><a href="#reexports">Re-exports</a></li><li><a href="#modules">Modules</a></li><li><a href="#structs">Structs</a></li><li><a href="#statics">Statics</a></li><li><a href="#traits">Traits</a></li><li><a href="#functions">Functions</a></li><li><a href="#types">Type Definitions</a></li></ul></div><p class='location'></p><script>window.sidebarCurrent = {name: 'day04', ty: 'mod', relpath: '../'};</script></div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><span class="help-button">?</span>
+                <a id="settings-menu" href="../settings.html"><img src="../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><h1 class='fqn'><span class='out-of-band'><span id='render-detail'><a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class='inner'>&#x2212;</span>]</a></span><a class='srclink' href='../src/day04/lib.rs.html#1-366' title='goto source code'>[src]</a></span><span class='in-band'>Crate <a class="mod" href=''>day04</a></span></h1><div class='docblock'><h1 id="day-04-passport-processing" class="section-header"><a href="#day-04-passport-processing">Day 04: Passport Processing</a></h1>
+<p><a href="https://github.com/nbigaouette/advent_of_code_2019/tree/master/day04">GitHub source</a></p>
+<p><a href="report/index.html">Benchmarking report</a></p>
+<h2 id="part-one" class="section-header"><a href="#part-one">Part One</a></h2>
+<p>You arrive at the airport only to realize that you grabbed your North Pole Credentials instead of your passport.
+While these documents are extremely similar, North Pole Credentials aren't issued by a country and therefore
+aren't actually valid documentation for travel in most of the world.</p>
+<p>It seems like you're not the only one having problems, though; a very long line has formed for the automatic
+passport scanners, and the delay could upset your travel itinerary.</p>
+<p>Due to some questionable network security, you realize you might be able to solve both of these problems at
+the same time.</p>
+<p>The automatic passport scanners are slow because they're having trouble <em>detecting which passports have all
+required fields</em>. The expected fields are as follows:</p>
+<ul>
+<li><code>byr</code> (Birth Year)</li>
+<li><code>iyr</code> (Issue Year)</li>
+<li><code>eyr</code> (Expiration Year)</li>
+<li><code>hgt</code> (Height)</li>
+<li><code>hcl</code> (Hair Color)</li>
+<li><code>ecl</code> (Eye Color)</li>
+<li><code>pid</code> (Passport ID)</li>
+<li><code>cid</code> (Country ID)</li>
+</ul>
+<p>Passport data is validated in batch files (your puzzle input). Each passport is represented as a sequence
+of <code>key:value</code> pairs separated by spaces or newlines. Passports are separated by blank lines.</p>
+<p>Here is an example batch file containing four passports:</p>
+<pre><code class="language-text">ecl:gry pid:860033327 eyr:2020 hcl:#fffffd
+byr:1937 iyr:2017 cid:147 hgt:183cm
+
+iyr:2013 ecl:amb cid:350 eyr:2023 pid:028048884
+hcl:#cfa07d byr:1929
+
+hcl:#ae17e1 iyr:2013
+eyr:2024
+ecl:brn pid:760753108 byr:1931
+hgt:179cm
+
+hcl:#cfa07d eyr:2025 pid:166559648
+iyr:2011 ecl:brn hgt:59in
+</code></pre>
+<p>The first passport is <em>valid</em> - all eight fields are present. The second passport is <em>invalid</em> - it is missing
+<code>hgt</code> (the Height field).</p>
+<p>The third passport is interesting; the <em>only missing field</em> is <code>cid</code>, so it looks like data from North Pole
+Credentials, not a passport at all! Surely, nobody would mind if you made the system temporarily ignore
+missing <code>cid</code> fields. Treat this &quot;passport&quot; as <em>valid</em>.</p>
+<p>The fourth passport is missing two fields, <code>cid</code> and <code>byr</code>. Missing <code>cid</code> is fine, but missing any other
+field is not, so this passport is <em>invalid</em>.</p>
+<p>According to the above rules, your improved system would report <code>_2_</code> valid passports.</p>
+<p>Count the number of <em>valid</em> passports - those that have all required fields. Treat <code>cid</code> as optional. <em>In
+your batch file, how many passports are valid?</em></p>
+<h2 id="part-two" class="section-header"><a href="#part-two">Part Two</a></h2>
+<p>The line is moving more quickly now, but you overhear airport security talking about how passports with invalid
+data are getting through. Better add some data validation, quick!</p>
+<p>You can continue to ignore the <code>cid</code> field, but each other field has strict rules about what values are valid
+for automatic validation:</p>
+<ul>
+<li><code>byr</code> (Birth Year) - four digits; at least <code>1920</code> and at most <code>2002</code>.</li>
+<li><code>iyr</code> (Issue Year) - four digits; at least <code>2010</code> and at most <code>2020</code>.</li>
+<li><code>eyr</code> (Expiration Year) - four digits; at least <code>2020</code> and at most <code>2030</code>.</li>
+<li><code>hgt</code> (Height) - a number followed by either <code>cm</code> or <code>in</code>:</li>
+<li>If <code>cm</code>, the number must be at least <code>150</code> and at most <code>193</code>.</li>
+<li>If <code>in</code>, the number must be at least <code>59</code> and at most <code>76</code>.</li>
+<li><code>hcl</code> (Hair Color) - a <code>#</code> followed by exactly six characters <code>0</code>-<code>9</code> or <code>a</code>-<code>f</code>.</li>
+<li><code>ecl</code> (Eye Color) - exactly one of: <code>amb</code> <code>blu</code> <code>brn</code> <code>gry</code> <code>grn</code> <code>hzl</code> <code>oth</code>.</li>
+<li><code>pid</code> (Passport ID) - a nine-digit number, including leading zeroes.</li>
+<li><code>cid</code> (Country ID) - ignored, missing or not.</li>
+</ul>
+<p>Your job is to count the passports where all required fields are both <em>present</em> and <em>valid</em> according to the
+above rules. Here are some example values:</p>
+<pre><code class="language-text">byr valid:   2002
+byr invalid: 2003
+
+hgt valid:   60in
+hgt valid:   190cm
+hgt invalid: 190in
+hgt invalid: 190
+
+hcl valid:   #123abc
+hcl invalid: #123abz
+hcl invalid: 123abc
+
+ecl valid:   brn
+ecl invalid: wat
+
+pid valid:   000000001
+pid invalid: 0123456789
+</code></pre>
+<p>Here are some invalid passports:</p>
+<pre><code class="language-text">eyr:1972 cid:100
+hcl:#18171d ecl:amb hgt:170 pid:186cm iyr:2018 byr:1926
+
+iyr:2019
+hcl:#602927 eyr:1967 hgt:170cm
+ecl:grn pid:012533040 byr:1946
+
+hcl:dab227 iyr:2012
+ecl:brn hgt:182cm pid:021572410 eyr:2020 byr:1992 cid:277
+
+hgt:59cm ecl:zzz
+eyr:2038 hcl:74454a iyr:2023
+pid:3556412378 byr:2007
+</code></pre>
+<p>Here are some valid passports:</p>
+<pre><code class="language-text">pid:087499704 hgt:74in ecl:grn iyr:2012 eyr:2030 byr:1980
+hcl:#623a2f
+
+eyr:2029 ecl:blu cid:129 byr:1989
+iyr:2014 pid:896056539 hcl:#a97842 hgt:165cm
+
+hcl:#888785
+hgt:164cm byr:2001 iyr:2015 cid:88
+pid:545766238 ecl:hzl
+eyr:2022
+
+iyr:2010 hgt:158cm hcl:#b6652a ecl:blu byr:1944 eyr:2021 pid:093154719
+</code></pre>
+<p>Count the number of <em>valid</em> passports - those that have all required fields <em>and valid values</em>. Continue to treat
+<code>cid</code> as optional. <em>In your batch file, how many passports are valid?</em></p>
+</div><h2 id='reexports' class='section-header'><a href="#reexports">Re-exports</a></h2>
+<table><tr><td><code>pub use crate::initial::<a class="struct" href="../day04/initial/struct.Day04Initial.html" title="struct day04::initial::Day04Initial">Day04Initial</a>;</code></td></tr></table><h2 id='modules' class='section-header'><a href="#modules">Modules</a></h2>
+<table><tr class='module-item'><td><a class="mod" href="benchmark/index.html" title='day04::benchmark mod'>benchmark</a></td><td class='docblock-short'></td></tr><tr class='module-item'><td><a class="mod" href="initial/index.html" title='day04::initial mod'>initial</a></td><td class='docblock-short'></td></tr></table><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
+<table><tr class='module-item'><td><a class="struct" href="struct.BirthYear.html" title='day04::BirthYear struct'>BirthYear</a></td><td class='docblock-short'></td></tr><tr class='module-item'><td><a class="struct" href="struct.CountryId.html" title='day04::CountryId struct'>CountryId</a></td><td class='docblock-short'></td></tr><tr class='module-item'><td><a class="struct" href="struct.ExpirationYear.html" title='day04::ExpirationYear struct'>ExpirationYear</a></td><td class='docblock-short'></td></tr><tr class='module-item'><td><a class="struct" href="struct.EyeColor.html" title='day04::EyeColor struct'>EyeColor</a></td><td class='docblock-short'></td></tr><tr class='module-item'><td><a class="struct" href="struct.HairColor.html" title='day04::HairColor struct'>HairColor</a></td><td class='docblock-short'></td></tr><tr class='module-item'><td><a class="struct" href="struct.Height.html" title='day04::Height struct'>Height</a></td><td class='docblock-short'></td></tr><tr class='module-item'><td><a class="struct" href="struct.IssueYear.html" title='day04::IssueYear struct'>IssueYear</a></td><td class='docblock-short'></td></tr><tr class='module-item'><td><a class="struct" href="struct.PassportBuilder.html" title='day04::PassportBuilder struct'>PassportBuilder</a></td><td class='docblock-short'></td></tr><tr class='module-item'><td><a class="struct" href="struct.PassportId.html" title='day04::PassportId struct'>PassportId</a></td><td class='docblock-short'></td></tr></table><h2 id='statics' class='section-header'><a href="#statics">Statics</a></h2>
+<table><tr class='module-item'><td><a class="static" href="static.PUZZLE_INPUT.html" title='day04::PUZZLE_INPUT static'>PUZZLE_INPUT</a></td><td class='docblock-short'></td></tr></table><h2 id='traits' class='section-header'><a href="#traits">Traits</a></h2>
+<table><tr class='module-item'><td><a class="trait" href="trait.AoC.html" title='day04::AoC trait'>AoC</a></td><td class='docblock-short'></td></tr><tr class='module-item'><td><a class="trait" href="trait.Context.html" title='day04::Context trait'>Context</a></td><td class='docblock-short'><p>Provides the <code>context</code> method for <code>Result</code>.</p>
+</td></tr></table><h2 id='functions' class='section-header'><a href="#functions">Functions</a></h2>
+<table><tr class='module-item'><td><a class="fn" href="fn.parse_input.html" title='day04::parse_input fn'>parse_input</a></td><td class='docblock-short'></td></tr></table><h2 id='types' class='section-header'><a href="#types">Type Definitions</a></h2>
+<table><tr class='module-item'><td><a class="type" href="type.Result.html" title='day04::Result type'>Result</a></td><td class='docblock-short'><p><code>Result&lt;T, Error&gt;</code></p>
+</td></tr></table></section><section id="search" class="content hidden"></section><section class="footer"></section><script>window.rootPath = "../";window.currentCrate = "day04";</script><script src="../main.js"></script><script defer src="../search-index.js"></script></body></html>

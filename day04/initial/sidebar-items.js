@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["ValidPassport",""]],"struct":[["Day04Initial",""],["ValidPassportCommon",""],["ValidPassportWithCid",""],["ValidPassportWithoutCid",""]]});
