@@ -72,16 +72,14 @@
 use std::fmt::Debug;
 
 pub use anyhow::{Context, Result};
-use shrinkwraprs::Shrinkwrap;
 
 pub mod initial;
 pub use crate::initial::Day04Initial;
 
-#[derive(Debug, Shrinkwrap, PartialEq)]
-pub struct Day04Entry(usize);
+type Day04Entry<'a> = PassportBuilder<'a>;
 
-type Day04SolutionPart1 = i64;
-type Day04SolutionPart2 = i64;
+type Day04SolutionPart1 = usize;
+type Day04SolutionPart2 = usize;
 
 pub trait AoC<'a>: Debug {
     type SolutionPart1;
@@ -104,11 +102,86 @@ pub trait AoC<'a>: Debug {
     }
 }
 
-pub fn parse_input<'a>(input: &'a str) -> impl Iterator<Item = Day04Entry> + 'a {
-    input
-        .lines()
-        .map(str::trim)
-        .map(|line| Day04Entry(line.trim().parse().expect("Invalid entry")))
+#[derive(Debug, Default, Clone, PartialEq)]
+pub struct BirthYear<'a>(&'a str);
+
+#[derive(Debug, Default, Clone, PartialEq)]
+pub struct IssueYear<'a>(&'a str);
+
+#[derive(Debug, Default, Clone, PartialEq)]
+pub struct ExpirationYear<'a>(&'a str);
+
+#[derive(Debug, Default, Clone, PartialEq)]
+pub struct Height<'a>(&'a str);
+
+#[derive(Debug, Default, Clone, PartialEq)]
+pub struct HairColor<'a>(&'a str);
+
+#[derive(Debug, Default, Clone, PartialEq)]
+pub struct EyeColor<'a>(&'a str);
+
+#[derive(Debug, Default, Clone, PartialEq)]
+pub struct PassportId<'a>(&'a str);
+
+#[derive(Debug, Default, Clone, PartialEq)]
+pub struct CountryId<'a>(&'a str);
+
+#[derive(Debug, Default, Clone, PartialEq)]
+pub struct PassportBuilder<'a> {
+    /// Height
+    hgt: Option<Height<'a>>,
+    /// Issue Year
+    iyr: Option<IssueYear<'a>>,
+    /// Expiration Year
+    eyr: Option<ExpirationYear<'a>>,
+    /// Hair Color
+    hcl: Option<HairColor<'a>>,
+    /// Eye Color
+    ecl: Option<EyeColor<'a>>,
+    /// Passport ID
+    pid: Option<PassportId<'a>>,
+    /// Birth Year
+    byr: Option<BirthYear<'a>>,
+    /// Country ID
+    cid: Option<CountryId<'a>>,
+}
+
+impl<'a> PassportBuilder<'a> {
+    fn new() -> PassportBuilder<'a> {
+        Default::default()
+    }
+
+    fn parse_line(mut self, line: &'a str) -> PassportBuilder<'a> {
+        line.split(' ').for_each(|pair| {
+            let mut pair_iter = pair.split(':');
+            let key = pair_iter.next().expect("a key");
+            let value = pair_iter.next().expect("a value");
+
+            match key {
+                "byr" => self.byr = Some(BirthYear(value)),
+                "iyr" => self.iyr = Some(IssueYear(value)),
+                "eyr" => self.eyr = Some(ExpirationYear(value)),
+                "hgt" => self.hgt = Some(Height(value)),
+                "hcl" => self.hcl = Some(HairColor(value)),
+                "ecl" => self.ecl = Some(EyeColor(value)),
+                "pid" => self.pid = Some(PassportId(value)),
+                "cid" => self.cid = Some(CountryId(value)),
+                _ => unreachable!(),
+            }
+        });
+
+        self
+    }
+}
+
+pub fn parse_input<'a>(input: &'a str) -> impl Iterator<Item = PassportBuilder<'a>> + 'a {
+    input.trim().split("\n\n").map(str::trim).map(|block| {
+        let passport_builder = block.lines().fold(PassportBuilder::new(), |builder, line| {
+            builder.parse_line(line)
+        });
+
+        passport_builder
+    })
 }
 
 pub static PUZZLE_INPUT: &str = include_str!("../input");
@@ -140,6 +213,20 @@ mod tests {
 
     use super::*;
 
+    pub const EXAMPLE_INPUT: &str = "ecl:gry pid:860033327 eyr:2020 hcl:#fffffd
+byr:1937 iyr:2017 cid:147 hgt:183cm
+
+iyr:2013 ecl:amb cid:350 eyr:2023 pid:028048884
+hcl:#cfa07d byr:1929
+
+hcl:#ae17e1 iyr:2013
+eyr:2024
+ecl:brn pid:760753108 byr:1931
+hgt:179cm
+
+hcl:#cfa07d eyr:2025 pid:166559648
+iyr:2011 ecl:brn hgt:59in";
+
     pub fn init_logger() {
         env::var("RUST_LOG")
             .or_else(|_| -> Result<String, ()> {
@@ -157,15 +244,50 @@ mod tests {
     fn parse() {
         init_logger();
 
-        unimplemented!();
-
-        let parsed: Vec<Day04Entry> = parse_input(PUZZLE_INPUT).collect();
-        assert_eq!(parsed.len(), 0);
+        let passport_builders: Vec<Day04Entry> = parse_input(EXAMPLE_INPUT).collect();
         assert_eq!(
-            &parsed[0..5],
+            passport_builders,
             &[
-                //
-                Day04Entry(0),
+                PassportBuilder {
+                    hgt: Some(Height("183cm")),
+                    iyr: Some(IssueYear("2017")),
+                    eyr: Some(ExpirationYear("2020")),
+                    hcl: Some(HairColor("#fffffd")),
+                    ecl: Some(EyeColor("gry")),
+                    pid: Some(PassportId("860033327")),
+                    byr: Some(BirthYear("1937")),
+                    cid: Some(CountryId("147")),
+                },
+                PassportBuilder {
+                    hgt: None,
+                    iyr: Some(IssueYear("2013")),
+                    eyr: Some(ExpirationYear("2023")),
+                    hcl: Some(HairColor("#cfa07d")),
+                    ecl: Some(EyeColor("amb")),
+                    pid: Some(PassportId("028048884")),
+                    byr: Some(BirthYear("1929")),
+                    cid: Some(CountryId("350")),
+                },
+                PassportBuilder {
+                    hgt: Some(Height("179cm")),
+                    iyr: Some(IssueYear("2013")),
+                    eyr: Some(ExpirationYear("2024")),
+                    hcl: Some(HairColor("#ae17e1")),
+                    ecl: Some(EyeColor("brn")),
+                    pid: Some(PassportId("760753108")),
+                    byr: Some(BirthYear("1931")),
+                    cid: None,
+                },
+                PassportBuilder {
+                    hgt: Some(Height("59in")),
+                    iyr: Some(IssueYear("2011")),
+                    eyr: Some(ExpirationYear("2025")),
+                    hcl: Some(HairColor("#cfa07d")),
+                    ecl: Some(EyeColor("brn")),
+                    pid: Some(PassportId("166559648")),
+                    byr: None,
+                    cid: None,
+                },
             ]
         );
     }
