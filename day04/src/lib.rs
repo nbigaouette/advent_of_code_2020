@@ -152,7 +152,7 @@ pub use anyhow::{Context, Result};
 pub mod initial;
 pub use crate::initial::Day04Initial;
 
-type Day04Entry<'a> = PassportBuilder<'a>;
+// type Day04Entry<'a> = PassportBuilder<'a>;
 
 type Day04SolutionPart1 = usize;
 type Day04SolutionPart2 = usize;
@@ -281,7 +281,6 @@ pub mod benchmark {
 mod tests {
     use std::env;
 
-    use env_logger;
     use pretty_assertions::assert_eq;
 
     use super::*;
@@ -317,7 +316,7 @@ iyr:2011 ecl:brn hgt:59in";
     fn parse() {
         init_logger();
 
-        let passport_builders: Vec<Day04Entry> = parse_input(EXAMPLE_INPUT).collect();
+        let passport_builders: Vec<PassportBuilder> = parse_input(EXAMPLE_INPUT).collect();
         assert_eq!(
             passport_builders,
             &[

@@ -159,7 +159,7 @@ mod part2 {
             match value.chars().count() {
                 4 => match value.parse::<i16>() {
                     Ok(parsed) => 1920 <= parsed && parsed <= 2002,
-                    Err(err) => {
+                    Err(_err) => {
                         // log::info!("Failed to parse {:?} as integer", value);
                         false
                     }
@@ -176,7 +176,7 @@ mod part2 {
             match value.chars().count() {
                 4 => match value.parse::<i16>() {
                     Ok(parsed) => 2010 <= parsed && parsed <= 2020,
-                    Err(err) => {
+                    Err(_err) => {
                         // log::info!("Failed to parse {:?} as integer", value);
                         false
                     }
@@ -193,7 +193,7 @@ mod part2 {
             match value.chars().count() {
                 4 => match value.parse::<i16>() {
                     Ok(parsed) => 2020 <= parsed && parsed <= 2030,
-                    Err(err) => {
+                    Err(_err) => {
                         // log::info!("Failed to parse {:?} as integer", value);
                         false
                     }
@@ -221,7 +221,7 @@ mod part2 {
                         false
                     }
                 }
-                Err(err) => {
+                Err(_err) => {
                     // log::info!("Failed to parse height {:?} as integer", height);
                     false
                 }
@@ -374,10 +374,8 @@ mod tests {
         }
 
         mod given {
-            use super::super::super::Day04Initial;
             use crate::{
-                parse_input, tests::init_logger, AoC, BirthYear, EyeColor, HairColor, Height,
-                PassportId,
+                parse_input, tests::init_logger, BirthYear, EyeColor, HairColor, Height, PassportId,
             };
 
             #[test]
