@@ -154,6 +154,28 @@ pub fn parse_input_part1<'a>(input: &'a str) -> impl Iterator<Item = Day06Entry>
     input.trim().split("\n\n").map(parse_input_part1_single)
 }
 
+pub fn parse_input_part2_single(input: &str) -> Day06Entry {
+    Day06Entry(
+        input
+            .trim()
+            .lines()
+            .map(str::trim)
+            .map(|line| line.as_bytes().iter().copied().collect::<HashSet<u8>>())
+            .fold(None, |acc: Option<HashSet<u8>>, line_set| {
+                let new_acc = match acc {
+                    None => Some(line_set),
+                    Some(acc) => Some(acc.intersection(&line_set).copied().collect()),
+                };
+                new_acc
+            })
+            .unwrap(),
+    )
+}
+
+pub fn parse_input_part2<'a>(input: &'a str) -> impl Iterator<Item = Day06Entry> + 'a {
+    input.trim().split("\n\n").map(parse_input_part2_single)
+}
+
 pub static PUZZLE_INPUT: &str = include_str!("../input");
 
 pub mod benchmark {
