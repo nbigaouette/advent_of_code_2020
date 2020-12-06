@@ -17,11 +17,13 @@ impl<'a> AoC<'a> for Day06Initial<'a> {
         Day06Initial { input }
     }
 
-    // fn solution_part1(&self) -> Self::SolutionPart1 {
-    // }
+    fn solution_part1(&self) -> Self::SolutionPart1 {
+        parse_input_part1(self.input).map(|entry| entry.len()).sum()
+    }
 
-    // fn solution_part2(&self) -> Self::SolutionPart2 {
-    // }
+    fn solution_part2(&self) -> Self::SolutionPart2 {
+        parse_input_part2(self.input).map(|entry| entry.len()).sum()
+    }
 }
 
 #[cfg(test)]
@@ -35,9 +37,7 @@ mod tests {
             fn solution() {
                 init_logger();
 
-                unimplemented!();
-
-                let expected = 0;
+                let expected = 6506;
                 let to_check = Day06Initial::new(PUZZLE_INPUT).solution_part1();
 
                 assert_eq!(to_check, expected);
@@ -52,10 +52,22 @@ mod tests {
             fn ex01() {
                 init_logger();
 
-                unimplemented!();
+                let expected = 11;
+                let input = "abc
 
-                let expected = 0;
-                let input = "";
+a
+b
+c
+
+ab
+ac
+
+a
+a
+a
+a
+
+b";
                 let to_check = Day06Initial::new(input).solution_part1();
 
                 assert_eq!(to_check, expected);
@@ -79,9 +91,7 @@ mod tests {
             fn solution() {
                 init_logger();
 
-                unimplemented!();
-
-                let expected = 0;
+                let expected = 3243;
                 let to_check = Day06Initial::new(PUZZLE_INPUT).solution_part2();
 
                 assert_eq!(to_check, expected);
@@ -96,10 +106,22 @@ mod tests {
             fn ex01() {
                 init_logger();
 
-                unimplemented!();
+                let expected = 6;
+                let input = "abc
 
-                let expected = 0;
-                let input = "";
+                                a
+                                b
+                                c
+
+                                ab
+                                ac
+
+                                a
+                                a
+                                a
+                                a
+
+                                b";
                 let to_check = Day06Initial::new(input).solution_part2();
 
                 assert_eq!(to_check, expected);
