@@ -66,7 +66,7 @@
 //!
 //!
 
-use std::fmt::Debug;
+use std::{collections::HashSet, fmt::Debug};
 
 pub use anyhow::{Context, Result};
 use shrinkwraprs::Shrinkwrap;
@@ -75,10 +75,10 @@ pub mod initial;
 pub use crate::initial::Day06Initial;
 
 #[derive(Debug, Shrinkwrap, PartialEq)]
-pub struct Day06Entry(usize);
+pub struct Day06Entry(HashSet<u8>);
 
-type Day06SolutionPart1 = i64;
-type Day06SolutionPart2 = i64;
+type Day06SolutionPart1 = usize;
+type Day06SolutionPart2 = usize;
 
 pub trait AoC<'a>: Debug {
     type SolutionPart1;
@@ -101,11 +101,20 @@ pub trait AoC<'a>: Debug {
     }
 }
 
-pub fn parse_input<'a>(input: &'a str) -> impl Iterator<Item = Day06Entry> + 'a {
-    input
-        .lines()
-        .map(str::trim)
-        .map(|line| Day06Entry(line.trim().parse().expect("Invalid entry")))
+pub fn parse_input_part1_single(input: &str) -> Day06Entry {
+    Day06Entry(
+        input
+            .trim()
+            .as_bytes()
+            .iter()
+            .copied()
+            .filter(|b| *b != b'\n')
+            .collect::<HashSet<u8>>(),
+    )
+}
+
+pub fn parse_input_part1<'a>(input: &'a str) -> impl Iterator<Item = Day06Entry> + 'a {
+    input.trim().split("\n\n").map(parse_input_part1_single)
 }
 
 pub static PUZZLE_INPUT: &str = include_str!("../input");
@@ -150,18 +159,90 @@ mod tests {
     }
 
     #[test]
-    fn parse() {
+    fn parse_part1_single() {
         init_logger();
 
-        unimplemented!();
-
-        let parsed: Vec<Day06Entry> = parse_input(PUZZLE_INPUT).collect();
-        assert_eq!(parsed.len(), 0);
+        let input = "abcx
+abcy
+abcz";
+        let parsed = parse_input_part1_single(input);
         assert_eq!(
-            &parsed[0..5],
+            parsed,
+            Day06Entry(
+                [b'a', b'b', b'c', b'x', b'y', b'z']
+                    .iter()
+                    .copied()
+                    .collect::<HashSet<u8>>()
+            )
+        );
+    }
+
+    #[test]
+    fn parse_part1() {
+        init_logger();
+
+        let input = "abc
+
+a
+b
+c
+
+ab
+ac
+
+a
+a
+a
+a
+
+b";
+
+        let parsed: Vec<Day06Entry> = parse_input_part1(input).collect();
+
+        assert_eq!(parsed.len(), 5);
+        assert_eq!(
+            parsed,
             &[
-                //
-                Day06Entry(0),
+                Day06Entry([b'a', b'b', b'c'].iter().copied().collect::<HashSet<u8>>()),
+                Day06Entry([b'a', b'b', b'c'].iter().copied().collect::<HashSet<u8>>()),
+                Day06Entry([b'a', b'b', b'c'].iter().copied().collect::<HashSet<u8>>()),
+                Day06Entry([b'a'].iter().copied().collect::<HashSet<u8>>()),
+                Day06Entry([b'b'].iter().copied().collect::<HashSet<u8>>())
+            ]
+        );
+    }
+
+    #[test]
+    fn parse_part2() {
+        init_logger();
+
+        let input = "abc
+
+a
+b
+c
+
+ab
+ac
+
+a
+a
+a
+a
+
+b";
+
+        let parsed: Vec<Day06Entry> = parse_input_part2(input).collect();
+
+        assert_eq!(parsed.len(), 5);
+        assert_eq!(
+            parsed,
+            &[
+                Day06Entry([b'a', b'b', b'c'].iter().copied().collect::<HashSet<u8>>()),
+                Day06Entry([].iter().copied().collect::<HashSet<u8>>()),
+                Day06Entry([b'a'].iter().copied().collect::<HashSet<u8>>()),
+                Day06Entry([b'a'].iter().copied().collect::<HashSet<u8>>()),
+                Day06Entry([b'b'].iter().copied().collect::<HashSet<u8>>())
             ]
         );
     }
