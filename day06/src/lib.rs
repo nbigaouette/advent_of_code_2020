@@ -108,6 +108,7 @@ use std::{collections::HashSet, fmt::Debug};
 pub use anyhow::{Context, Result};
 use shrinkwraprs::Shrinkwrap;
 
+pub mod bits;
 pub mod initial;
 pub use crate::initial::Day06Initial;
 
@@ -179,6 +180,8 @@ pub fn parse_input_part2<'a>(input: &'a str) -> impl Iterator<Item = Day06Entry>
 pub static PUZZLE_INPUT: &str = include_str!("../input");
 
 pub mod benchmark {
+    use bits::Day06Bits;
+
     use super::*;
 
     pub type BenchmarkVector<'a> = Vec<
@@ -189,7 +192,10 @@ pub mod benchmark {
     >;
 
     pub fn to_benchmark<'a>() -> BenchmarkVector<'a> {
-        vec![Box::new(Day06Initial::new(PUZZLE_INPUT))]
+        vec![
+            Box::new(Day06Initial::new(PUZZLE_INPUT)),
+            Box::new(Day06Bits::new(PUZZLE_INPUT)),
+        ]
     }
 }
 
