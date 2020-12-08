@@ -86,16 +86,17 @@
 use std::fmt::Debug;
 
 pub use anyhow::{Context, Result};
+use parse_display::{Display, FromStr};
 use shrinkwraprs::Shrinkwrap;
 
 pub mod initial;
 pub use crate::initial::Day08Initial;
 
-#[derive(Debug, Shrinkwrap, PartialEq)]
-pub struct Day08Entry(usize);
+#[derive(Debug, Clone, Shrinkwrap, PartialEq)]
+pub struct Day08Entry(Instruction);
 
-type Day08SolutionPart1 = i64;
-type Day08SolutionPart2 = i64;
+type Day08SolutionPart1 = isize;
+type Day08SolutionPart2 = isize;
 
 pub trait AoC<'a>: Debug {
     type SolutionPart1;
@@ -118,8 +119,19 @@ pub trait AoC<'a>: Debug {
     }
 }
 
+#[derive(Display, Clone, FromStr, PartialEq, Debug)]
+pub enum Instruction {
+    #[display("acc {0}")]
+    Accumulator(isize),
+    #[display("jmp {0}")]
+    Jump(isize),
+    #[display("nop {0}")]
+    NoOp(isize),
+}
+
 pub fn parse_input<'a>(input: &'a str) -> impl Iterator<Item = Day08Entry> + 'a {
     input
+        .trim()
         .lines()
         .map(str::trim)
         .map(|line| Day08Entry(line.trim().parse().expect("Invalid entry")))
@@ -170,16 +182,29 @@ mod tests {
     fn parse() {
         init_logger();
 
-        unimplemented!();
+        let input = "nop +0
+                        acc +1
+                        jmp +4
+                        acc +3
+                        jmp -3
+                        acc -99
+                        acc +1
+                        jmp -4
+                        acc +6";
+        let expected = &[
+            Day08Entry(Instruction::NoOp(0)),
+            Day08Entry(Instruction::Accumulator(1)),
+            Day08Entry(Instruction::Jump(4)),
+            Day08Entry(Instruction::Accumulator(3)),
+            Day08Entry(Instruction::Jump(-3)),
+            Day08Entry(Instruction::Accumulator(-99)),
+            Day08Entry(Instruction::Accumulator(1)),
+            Day08Entry(Instruction::Jump(-4)),
+            Day08Entry(Instruction::Accumulator(6)),
+        ];
 
-        let parsed: Vec<Day08Entry> = parse_input(PUZZLE_INPUT).collect();
-        assert_eq!(parsed.len(), 0);
-        assert_eq!(
-            &parsed[0..5],
-            &[
-                //
-                Day08Entry(0),
-            ]
-        );
+        let parsed: Vec<Day08Entry> = parse_input(input).collect();
+        assert_eq!(parsed.len(), 9);
+        assert_eq!(parsed, expected);
     }
 }
