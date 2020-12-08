@@ -17,8 +17,28 @@ impl<'a> AoC<'a> for Day08Initial<'a> {
         Day08Initial { input }
     }
 
-    // fn solution_part1(&self) -> Self::SolutionPart1 {
-    // }
+    fn solution_part1(&self) -> Self::SolutionPart1 {
+        let instructions: Vec<Day08Entry> = parse_input(self.input).collect();
+        let mut instructions_execution_count = vec![0; instructions.len()];
+
+        let mut instruction_idx: isize = 0;
+        let mut accumulator = 0;
+
+        while instructions_execution_count[instruction_idx as usize] == 0 {
+            instructions_execution_count[instruction_idx as usize] += 1;
+            match instructions[instruction_idx as usize].0 {
+                Instruction::Accumulator(argument) => {
+                    accumulator += argument;
+                    instruction_idx += 1;
+                }
+                Instruction::Jump(argument) => {
+                    instruction_idx += argument;
+                }
+                Instruction::NoOp(_argument) => {
+                    instruction_idx += 1;
+                }
+            }
+        }
 
     // fn solution_part2(&self) -> Self::SolutionPart2 {
     // }
@@ -35,9 +55,7 @@ mod tests {
             fn solution() {
                 init_logger();
 
-                unimplemented!();
-
-                let expected = 0;
+                let expected = 1262;
                 let to_check = Day08Initial::new(PUZZLE_INPUT).solution_part1();
 
                 assert_eq!(to_check, expected);
@@ -52,10 +70,16 @@ mod tests {
             fn ex01() {
                 init_logger();
 
-                unimplemented!();
-
-                let expected = 0;
-                let input = "";
+                let expected = 5;
+                let input = "nop +0
+                                acc +1
+                                jmp +4
+                                acc +3
+                                jmp -3
+                                acc -99
+                                acc +1
+                                jmp -4
+                                acc +6";
                 let to_check = Day08Initial::new(input).solution_part1();
 
                 assert_eq!(to_check, expected);
