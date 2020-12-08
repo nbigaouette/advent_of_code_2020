@@ -5,9 +5,10 @@ authors = ["Nicolas Bigaouette <nbigaouette@gmail.com>"]
 edition = "2018"
 
 [dependencies]
-# log = "0.4"
+log = "0.4"
 anyhow = "1.0"
 shrinkwraprs = "0.3"
+parse-display = "0.4"
 
 [dev-dependencies]
 pretty_assertions = "0.6"
