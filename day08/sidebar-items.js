@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["Instruction",""]],"fn":[["parse_input",""]],"mod":[["benchmark",""],["initial",""]],"static":[["PUZZLE_INPUT",""]],"struct":[["Day08Entry",""]],"trait":[["AoC",""],["Context","Provides the `context` method for `Result`."]],"type":[["Result","`Result<T, Error>`"]]});

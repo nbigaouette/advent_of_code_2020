@@ -5,4 +5,5 @@ sourcesIndex["day03"] = {"name":"","files":["initial.rs","lib.rs"]};
 sourcesIndex["day04"] = {"name":"","files":["initial.rs","lib.rs"]};
 sourcesIndex["day05"] = {"name":"","files":["initial.rs","lib.rs"]};
 sourcesIndex["day06"] = {"name":"","files":["bits.rs","initial.rs","lib.rs"]};
+sourcesIndex["day08"] = {"name":"","files":["initial.rs","lib.rs"]};
 createSourceSidebar();

@@ -1,0 +1,117 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="API documentation for the Rust `day08` crate."><meta name="keywords" content="rust, rustlang, rust-lang, day08"><title>day08 - Rust</title><link rel="stylesheet" type="text/css" href="../normalize.css"><link rel="stylesheet" type="text/css" href="../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../ayu.css" disabled ><script src="../storage.js"></script><noscript><link rel="stylesheet" href="../noscript.css"></noscript><link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="alternate icon" type="image/png" href="../favicon-16x16.png">
+<link rel="alternate icon" type="image/png" href="../favicon-32x32.png"><style type="text/css">#crate-search{background-image:url("../down-arrow.svg");}</style></head><body class="rustdoc mod"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../day08/index.html'><div class='logo-container rust-logo'><img src='../rust-logo.png' alt='logo'></div></a><p class='location'>Crate day08</p><div class='block version'><p>Version 0.1.0</p></div><div class="sidebar-elems"><a id='all-types' href='all.html'><p>See all day08's items</p></a><div class="block items"><ul><li><a href="#reexports">Re-exports</a></li><li><a href="#modules">Modules</a></li><li><a href="#structs">Structs</a></li><li><a href="#enums">Enums</a></li><li><a href="#statics">Statics</a></li><li><a href="#traits">Traits</a></li><li><a href="#functions">Functions</a></li><li><a href="#types">Type Definitions</a></li></ul></div><p class='location'></p><script>window.sidebarCurrent = {name: 'day08', ty: 'mod', relpath: '../'};</script></div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><span class="help-button">?</span>
+                <a id="settings-menu" href="../settings.html"><img src="../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><h1 class='fqn'><span class='out-of-band'><span id='render-detail'><a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class='inner'>&#x2212;</span>]</a></span><a class='srclink' href='../src/day08/lib.rs.html#1-257' title='goto source code'>[src]</a></span><span class='in-band'>Crate <a class="mod" href=''>day08</a></span></h1><div class='docblock'><h1 id="day-08-handheld-halting" class="section-header"><a href="#day-08-handheld-halting">Day 08: Handheld Halting</a></h1>
+<p><a href="https://github.com/nbigaouette/advent_of_code_2019/tree/master/day08">GitHub source</a></p>
+<p><a href="report/index.html">Benchmarking report</a></p>
+<h2 id="part-one" class="section-header"><a href="#part-one">Part One</a></h2>
+<p>Your flight to the major airline hub reaches cruising altitude without incident. While you
+consider checking the in-flight menu for one of those drinks that come with a little
+umbrella, you are interrupted by the kid sitting next to you.</p>
+<p>Their <a href="https://en.wikipedia.org/wiki/Handheld_game_console">handheld game console</a> won't
+turn on! They ask if you can take a look.</p>
+<p>You narrow the problem down to a strange <em>infinite loop</em> in the boot code (your puzzle
+input) of the device. You should be able to fix it, but first you need to be able to run
+the code in isolation.</p>
+<p>The boot code is represented as a text file with one <em>instruction</em> per line of text. Each
+instruction consists of an <em>operation</em> (<code>acc</code>, <code>jmp</code>, or <code>nop</code>) and an <em>argument</em> (a signed
+number like <code>+4</code> or <code>-20</code>).</p>
+<ul>
+<li><code>acc</code> increases or decreases a single global value called the <em>accumulator</em> by the value
+given in the argument. For example, <code>acc +7</code> would increase the accumulator by 7. The
+accumulator starts at <code>0</code>. After an <code>acc</code> instruction, the instruction immediately below
+it is executed next.</li>
+<li><code>jmp</code> <em>jumps</em> to a new instruction relative to itself. The next instruction to execute
+is found using the argument as an <em>offset</em> from the <code>jmp</code> instruction; for example,
+<code>jmp +2</code> would skip the next instruction, <code>jmp +1</code> would continue to the instruction
+immediately below it, and <code>jmp -20</code> would cause the instruction 20 lines above to be
+executed next.</li>
+<li><code>nop</code> stands for <em>No OPeration</em> - it does nothing. The instruction immediately below
+it is executed next.</li>
+</ul>
+<p>For example, consider the following program:</p>
+<pre><code class="language-text">nop +0
+acc +1
+jmp +4
+acc +3
+jmp -3
+acc -99
+acc +1
+jmp -4
+acc +6
+</code></pre>
+<p>These instructions are visited in this order:</p>
+<pre><code class="language-text">nop +0  | 1
+acc +1  | 2, 8(!)
+jmp +4  | 3
+acc +3  | 6
+jmp -3  | 7
+acc -99 |
+acc +1  | 4
+jmp -4  | 5
+acc +6  |
+</code></pre>
+<p>First, the <code>nop +0</code> does nothing. Then, the accumulator is increased from 0 to 1
+(<code>acc +1</code>) and <code>jmp +4</code> sets the next instruction to the other <code>acc +1</code> near the bottom.
+After it increases the accumulator from 1 to 2, <code>jmp -4</code> executes, setting the next
+instruction to the only <code>acc +3</code>. It sets the accumulator to 5, and <code>jmp -3</code> causes
+the program to continue back at the first <code>acc +1</code>.</p>
+<p>This is an <em>infinite loop</em>: with this sequence of jumps, the program will run forever.
+The moment the program tries to run any instruction a second time, you know it will
+never terminate.</p>
+<p>Immediately <em>before</em> the program would run an instruction a second time, the value in
+the accumulator is <em><code>5</code></em>.</p>
+<p>Run your copy of the boot code. Immediately before any instruction is executed a second
+time, <em>what value is in the accumulator?</em></p>
+<h2 id="part-two" class="section-header"><a href="#part-two">Part Two</a></h2>
+<p>After some careful analysis, you believe that <em>exactly one instruction is corrupted</em>.</p>
+<p>Somewhere in the program, <em>either</em> a <code>jmp</code> is supposed to be a <code>nop</code>, <em>or</em> a <code>nop</code> is
+supposed to be a <code>jmp</code>. (No <code>acc</code> instructions were harmed in the corruption of this
+boot code.)</p>
+<p>The program is supposed to terminate by <em>attempting to execute an instruction
+immediately after the last instruction in the file</em>. By changing exactly one
+<code>jmp</code> or <code>nop</code>, you can repair the boot code and make it terminate correctly.</p>
+<p>For example, consider the same program from above:</p>
+<pre><code class="language-text">nop +0
+acc +1
+jmp +4
+acc +3
+jmp -3
+acc -99
+acc +1
+jmp -4
+acc +6
+</code></pre>
+<p>If you change the first instruction from <code>nop +0</code> to <code>jmp +0</code>, it would create a
+single-instruction infinite loop, never leaving that instruction. If you change almost
+any of the <code>jmp</code> instructions, the program will still eventually find another <code>jmp</code>
+instruction and loop forever.</p>
+<p>However, if you change the second-to-last instruction (from <code>jmp -4</code> to <code>nop -4</code>),
+the program terminates! The instructions are visited in this order:</p>
+<pre><code class="language-text">nop +0  | 1
+acc +1  | 2
+jmp +4  | 3
+acc +3  |
+jmp -3  |
+acc -99 |
+acc +1  | 4
+nop -4  | 5
+acc +6  | 6
+</code></pre>
+<p>After the last instruction (<code>acc +6</code>), the program terminates by attempting to run
+the instruction below the last instruction in the file. With this change, after the
+program terminates, the accumulator contains the value <em><code>8</code></em> (<code>acc +1</code>, <code>acc +1</code>, <code>acc +6</code>).</p>
+<p>Fix the program so that it terminates normally by changing exactly one <code>jmp</code> (to
+<code>nop</code>) or <code>nop</code> (to <code>jmp</code>). <em>What is the value of the accumulator after the program
+terminates?</em></p>
+</div><h2 id='reexports' class='section-header'><a href="#reexports">Re-exports</a></h2>
+<table><tr><td><code>pub use crate::initial::<a class="struct" href="../day08/initial/struct.Day08Initial.html" title="struct day08::initial::Day08Initial">Day08Initial</a>;</code></td></tr></table><h2 id='modules' class='section-header'><a href="#modules">Modules</a></h2>
+<table><tr class='module-item'><td><a class="mod" href="benchmark/index.html" title='day08::benchmark mod'>benchmark</a></td><td class='docblock-short'></td></tr><tr class='module-item'><td><a class="mod" href="initial/index.html" title='day08::initial mod'>initial</a></td><td class='docblock-short'></td></tr></table><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
+<table><tr class='module-item'><td><a class="struct" href="struct.Day08Entry.html" title='day08::Day08Entry struct'>Day08Entry</a></td><td class='docblock-short'></td></tr></table><h2 id='enums' class='section-header'><a href="#enums">Enums</a></h2>
+<table><tr class='module-item'><td><a class="enum" href="enum.Instruction.html" title='day08::Instruction enum'>Instruction</a></td><td class='docblock-short'></td></tr></table><h2 id='statics' class='section-header'><a href="#statics">Statics</a></h2>
+<table><tr class='module-item'><td><a class="static" href="static.PUZZLE_INPUT.html" title='day08::PUZZLE_INPUT static'>PUZZLE_INPUT</a></td><td class='docblock-short'></td></tr></table><h2 id='traits' class='section-header'><a href="#traits">Traits</a></h2>
+<table><tr class='module-item'><td><a class="trait" href="trait.AoC.html" title='day08::AoC trait'>AoC</a></td><td class='docblock-short'></td></tr><tr class='module-item'><td><a class="trait" href="trait.Context.html" title='day08::Context trait'>Context</a></td><td class='docblock-short'><p>Provides the <code>context</code> method for <code>Result</code>.</p>
+</td></tr></table><h2 id='functions' class='section-header'><a href="#functions">Functions</a></h2>
+<table><tr class='module-item'><td><a class="fn" href="fn.parse_input.html" title='day08::parse_input fn'>parse_input</a></td><td class='docblock-short'></td></tr></table><h2 id='types' class='section-header'><a href="#types">Type Definitions</a></h2>
+<table><tr class='module-item'><td><a class="type" href="type.Result.html" title='day08::Result type'>Result</a></td><td class='docblock-short'><p><code>Result&lt;T, Error&gt;</code></p>
+</td></tr></table></section><section id="search" class="content hidden"></section><section class="footer"></section><script>window.rootPath = "../";window.currentCrate = "day08";</script><script src="../main.js"></script><script defer src="../search-index.js"></script></body></html>
