@@ -52,7 +52,7 @@
 //!
 //!
 
-use std::fmt::Debug;
+use std::{collections::HashMap, fmt::Debug};
 
 pub use anyhow::{Context, Result};
 use shrinkwraprs::Shrinkwrap;
@@ -63,8 +63,8 @@ pub use crate::initial::Day07Initial;
 #[derive(Debug, Shrinkwrap, PartialEq)]
 pub struct Day07Entry(usize);
 
-type Day07SolutionPart1 = i64;
-type Day07SolutionPart2 = i64;
+type Day07SolutionPart1 = usize;
+type Day07SolutionPart2 = usize;
 
 pub trait AoC<'a>: Debug {
     type SolutionPart1;
@@ -87,11 +87,41 @@ pub trait AoC<'a>: Debug {
     }
 }
 
-pub fn parse_input<'a>(input: &'a str) -> impl Iterator<Item = Day07Entry> + 'a {
+pub fn parse_input<'a>(input: &'a str) -> HashMap<&'a str, Vec<(usize, &'a str)>> {
     input
+        .trim()
         .lines()
         .map(str::trim)
-        .map(|line| Day07Entry(line.trim().parse().expect("Invalid entry")))
+        .map(|line| {
+            let mut entry_iter = line.split(" bags contain ");
+            let bag_containing = entry_iter.next().expect("a containing bag");
+            let contained_bags_sentence = entry_iter.next().expect("contained bags");
+
+            let contained_bags: Vec<(usize, &'a str)> = match contained_bags_sentence {
+                "no other bags." => Vec::new(),
+                contained_bags_sentence => contained_bags_sentence
+                    .split(", ")
+                    .map(|entry| {
+                        let mut entry_iter = entry.split(' ');
+                        let count_str = entry_iter.next().expect("a count string");
+
+                        let bag_color = entry
+                            .trim_start_matches(count_str)
+                            .trim_end_matches('.')
+                            .trim_end_matches("bags")
+                            .trim_end_matches("bag")
+                            .trim();
+
+                        let count: usize = count_str.parse().expect("a count number");
+
+                        (count, bag_color)
+                    })
+                    .collect(),
+            };
+
+            (bag_containing, contained_bags)
+        })
+        .collect()
 }
 
 pub static PUZZLE_INPUT: &str = include_str!("../input");
@@ -136,19 +166,52 @@ mod tests {
     }
 
     #[test]
+    fn parse_single() {
+        init_logger();
+
+        let input = "light red bags contain 1 bright white bag, 2 muted yellow bags.";
+        let expected = [("light red", vec![(1, "bright white"), (2, "muted yellow")])]
+            .iter()
+            .cloned()
+            .collect::<HashMap<&str, Vec<(usize, &str)>>>();
+
+        let rules = parse_input(input);
+        assert_eq!(rules.len(), 1);
+        assert_eq!(rules, expected);
+    }
+    #[test]
     fn parse() {
         init_logger();
 
-        unimplemented!();
+        let input = "light red bags contain 1 bright white bag, 2 muted yellow bags.
+        dark orange bags contain 3 bright white bags, 4 muted yellow bags.
+        bright white bags contain 1 shiny gold bag.
+        muted yellow bags contain 2 shiny gold bags, 9 faded blue bags.
+        shiny gold bags contain 1 dark olive bag, 2 vibrant plum bags.
+        dark olive bags contain 3 faded blue bags, 4 dotted black bags.
+        vibrant plum bags contain 5 faded blue bags, 6 dotted black bags.
+        faded blue bags contain no other bags.
+        dotted black bags contain no other bags.";
+        let expected = [
+            ("light red", vec![(1, "bright white"), (2, "muted yellow")]),
+            (
+                "dark orange",
+                vec![(3, "bright white"), (4, "muted yellow")],
+            ),
+            ("bright white", vec![(1, "shiny gold")]),
+            ("muted yellow", vec![(2, "shiny gold"), (9, "faded blue")]),
+            ("shiny gold", vec![(1, "dark olive"), (2, "vibrant plum")]),
+            ("dark olive", vec![(3, "faded blue"), (4, "dotted black")]),
+            ("vibrant plum", vec![(5, "faded blue"), (6, "dotted black")]),
+            ("faded blue", vec![]),
+            ("dotted black", vec![]),
+        ]
+        .iter()
+        .cloned()
+        .collect::<HashMap<&str, Vec<(usize, &str)>>>();
 
-        let parsed: Vec<Day07Entry> = parse_input(PUZZLE_INPUT).collect();
-        assert_eq!(parsed.len(), 0);
-        assert_eq!(
-            &parsed[0..5],
-            &[
-                //
-                Day07Entry(0),
-            ]
-        );
+        let rules = parse_input(input);
+        assert_eq!(rules.len(), 9);
+        assert_eq!(rules, expected);
     }
 }
