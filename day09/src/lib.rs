@@ -168,10 +168,7 @@ pub mod benchmark {
     >;
 
     pub fn to_benchmark<'a>() -> BenchmarkVector<'a> {
-        unimplemented!()
-        // vec![
-        //     Box::new(Day09Initial::new(PUZZLE_INPUT)),
-        // ]
+        vec![Box::new(Day09Initial::new(PUZZLE_INPUT))]
     }
 }
 
