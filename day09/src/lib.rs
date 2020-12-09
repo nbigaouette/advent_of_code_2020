@@ -81,16 +81,14 @@
 use std::fmt::Debug;
 
 pub use anyhow::{Context, Result};
-use shrinkwraprs::Shrinkwrap;
 
 pub mod initial;
 pub use crate::initial::Day09Initial;
 
-#[derive(Debug, Shrinkwrap, PartialEq)]
-pub struct Day09Entry(usize);
+type Day09Entry = isize;
 
-type Day09SolutionPart1 = i64;
-type Day09SolutionPart2 = i64;
+type Day09SolutionPart1 = isize;
+type Day09SolutionPart2 = isize;
 
 pub trait AoC<'a>: Debug {
     type SolutionPart1;
@@ -115,9 +113,10 @@ pub trait AoC<'a>: Debug {
 
 pub fn parse_input<'a>(input: &'a str) -> impl Iterator<Item = Day09Entry> + 'a {
     input
+        .trim()
         .lines()
         .map(str::trim)
-        .map(|line| Day09Entry(line.trim().parse().expect("Invalid entry")))
+        .map(|line| line.trim().parse().expect("Invalid entry"))
 }
 
 pub static PUZZLE_INPUT: &str = include_str!("../input");
@@ -165,15 +164,33 @@ mod tests {
     fn parse() {
         init_logger();
 
-        unimplemented!();
-
-        let parsed: Vec<Day09Entry> = parse_input(PUZZLE_INPUT).collect();
-        assert_eq!(parsed.len(), 0);
+        let input = "35
+                        20
+                        15
+                        25
+                        47
+                        40
+                        62
+                        55
+                        65
+                        95
+                        102
+                        117
+                        150
+                        182
+                        127
+                        219
+                        299
+                        277
+                        309
+                        576";
+        let parsed: Vec<Day09Entry> = parse_input(input).collect();
+        assert_eq!(parsed.len(), 20);
         assert_eq!(
-            &parsed[0..5],
+            parsed,
             &[
-                //
-                Day09Entry(0),
+                35, 20, 15, 25, 47, 40, 62, 55, 65, 95, 102, 117, 150, 182, 127, 219, 299, 277,
+                309, 576,
             ]
         );
     }
