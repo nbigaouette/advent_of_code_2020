@@ -83,7 +83,12 @@ fn solution_part2(entries: &[Day09Entry], target: isize) -> isize {
     for start_idx in 0..entries.len() {
         for end_idx in (start_idx + 2)..entries.len() {
             let slice = &entries[start_idx..end_idx];
-            if slice.iter().sum::<isize>() == target {
+            let slice_sum: isize = slice.iter().sum();
+            if slice_sum > target {
+                // If the sum is too large, we start a new window lower range
+                break;
+            }
+            if slice_sum == target {
                 return slice.iter().max().expect("a max") + slice.iter().min().expect("a min");
             }
         }
