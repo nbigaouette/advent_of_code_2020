@@ -39,8 +39,6 @@ impl<'a> AoC<'a> for Day07Initial<'a> {
         while !stack.is_empty() {
             let color_containing = stack.pop().expect("non-empty stack");
 
-    // fn solution_part2(&self) -> Self::SolutionPart2 {
-    // }
             possibility.insert(color_containing);
             if inverted_rules.contains_key(color_containing) {
                 stack.extend(inverted_rules[color_containing].iter());
@@ -49,6 +47,28 @@ impl<'a> AoC<'a> for Day07Initial<'a> {
         }
 
         possibility.len()
+    }
+
+    fn solution_part2(&self) -> Self::SolutionPart2 {
+        let rules: HashMap<&str, Vec<(usize, &str)>> = parse_input(self.input);
+
+        let count = recursive_count(&rules, &(1, "shiny gold"));
+
+        // We needed to count the initial bag for the recursion to work, remove it here.
+        count - 1
+    }
+}
+
+fn recursive_count(rules: &HashMap<&str, Vec<(usize, &str)>>, bag: &(usize, &str)) -> usize {
+    let children = &rules[bag.1];
+    if children.is_empty() {
+        bag.0
+    } else {
+        let sum = children
+            .iter()
+            .map(|child| recursive_count(rules, child))
+            .sum::<usize>();
+        bag.0 + bag.0 * sum
     }
 }
 
@@ -119,9 +139,7 @@ mod tests {
             fn solution() {
                 init_logger();
 
-                unimplemented!();
-
-                let expected = 0;
+                let expected = 45018;
                 let to_check = Day07Initial::new(PUZZLE_INPUT).solution_part2();
 
                 assert_eq!(to_check, expected);
@@ -136,10 +154,33 @@ mod tests {
             fn ex01() {
                 init_logger();
 
-                unimplemented!();
+                let expected = 32;
+                let input = "light red bags contain 1 bright white bag, 2 muted yellow bags.
+                                dark orange bags contain 3 bright white bags, 4 muted yellow bags.
+                                bright white bags contain 1 shiny gold bag.
+                                muted yellow bags contain 2 shiny gold bags, 9 faded blue bags.
+                                shiny gold bags contain 1 dark olive bag, 2 vibrant plum bags.
+                                dark olive bags contain 3 faded blue bags, 4 dotted black bags.
+                                vibrant plum bags contain 5 faded blue bags, 6 dotted black bags.
+                                faded blue bags contain no other bags.
+                                dotted black bags contain no other bags.";
+                let to_check = Day07Initial::new(input).solution_part2();
 
-                let expected = 0;
-                let input = "";
+                assert_eq!(to_check, expected);
+            }
+
+            #[test]
+            fn ex02() {
+                init_logger();
+
+                let expected = 126;
+                let input = "shiny gold bags contain 2 dark red bags.
+                                dark red bags contain 2 dark orange bags.
+                                dark orange bags contain 2 dark yellow bags.
+                                dark yellow bags contain 2 dark green bags.
+                                dark green bags contain 2 dark blue bags.
+                                dark blue bags contain 2 dark violet bags.
+                                dark violet bags contain no other bags.";
                 let to_check = Day07Initial::new(input).solution_part2();
 
                 assert_eq!(to_check, expected);
