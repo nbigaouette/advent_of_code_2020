@@ -24,8 +24,14 @@ impl<'a> AoC<'a> for Day09Initial<'a> {
         solution_part1(&parsed, 25)
     }
 
-    // fn solution_part2(&self) -> Self::SolutionPart2 {
-    // }
+    fn solution_part2(&self) -> Self::SolutionPart2 {
+        let parsed: Vec<Day09Entry> = parse_input(self.input).collect();
+
+        // Solution to part 1
+        let target: isize = 217430975;
+
+        solution_part2(&parsed, target)
+    }
 }
 
 #[derive(Debug)]
@@ -71,6 +77,18 @@ fn solution_part1(entries: &[Day09Entry], window: usize) -> isize {
         .expect("A matching value");
 
     *value
+}
+
+fn solution_part2(entries: &[Day09Entry], target: isize) -> isize {
+    for start_idx in 0..entries.len() {
+        for end_idx in (start_idx + 2)..entries.len() {
+            let slice = &entries[start_idx..end_idx];
+            if slice.iter().sum::<isize>() == target {
+                return slice.iter().max().expect("a max") + slice.iter().min().expect("a min");
+            }
+        }
+    }
+    unreachable!()
 }
 
 #[cfg(test)]
@@ -143,9 +161,7 @@ mod tests {
             fn solution() {
                 init_logger();
 
-                unimplemented!();
-
-                let expected = 0;
+                let expected = 28509180;
                 let to_check = Day09Initial::new(PUZZLE_INPUT).solution_part2();
 
                 assert_eq!(to_check, expected);
@@ -153,18 +169,35 @@ mod tests {
         }
 
         mod given {
-            use super::super::super::Day09Initial;
-            use crate::{tests::init_logger, AoC};
+            use crate::{initial::solution_part2, parse_input, tests::init_logger};
 
             #[test]
             fn ex01() {
                 init_logger();
 
-                unimplemented!();
-
-                let expected = 0;
-                let input = "";
-                let to_check = Day09Initial::new(input).solution_part2();
+                let expected = 62;
+                let input = "35
+                                20
+                                15
+                                25
+                                47
+                                40
+                                62
+                                55
+                                65
+                                95
+                                102
+                                117
+                                150
+                                182
+                                127
+                                219
+                                299
+                                277
+                                309
+                                576";
+                let parsed: Vec<_> = parse_input(input).collect();
+                let to_check = solution_part2(&parsed, 127);
 
                 assert_eq!(to_check, expected);
             }
