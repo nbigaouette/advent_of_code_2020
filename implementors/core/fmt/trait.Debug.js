@@ -7,4 +7,5 @@ implementors["day05"] = [{"text":"impl&lt;'a&gt; Debug for Day05Initial&lt;'a&gt
 implementors["day06"] = [{"text":"impl&lt;'a&gt; Debug for Day06Bits&lt;'a&gt;","synthetic":false,"types":[]},{"text":"impl&lt;'a&gt; Debug for Day06Initial&lt;'a&gt;","synthetic":false,"types":[]},{"text":"impl Debug for Day06Entry","synthetic":false,"types":[]}];
 implementors["day07"] = [{"text":"impl&lt;'a&gt; Debug for Day07Initial&lt;'a&gt;","synthetic":false,"types":[]},{"text":"impl Debug for Day07Entry","synthetic":false,"types":[]}];
 implementors["day08"] = [{"text":"impl&lt;'a&gt; Debug for Day08Initial&lt;'a&gt;","synthetic":false,"types":[]},{"text":"impl Debug for Day08Entry","synthetic":false,"types":[]},{"text":"impl Debug for Instruction","synthetic":false,"types":[]}];
+implementors["day09"] = [{"text":"impl&lt;'a&gt; Debug for Day09Initial&lt;'a&gt;","synthetic":false,"types":[]}];
 if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()

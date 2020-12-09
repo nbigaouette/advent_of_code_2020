@@ -7,4 +7,5 @@ implementors["day05"] = [{"text":"impl&lt;'a&gt; UnwindSafe for Day05Entry&lt;'a
 implementors["day06"] = [{"text":"impl UnwindSafe for Day06Entry","synthetic":true,"types":[]},{"text":"impl&lt;'a&gt; UnwindSafe for Day06Bits&lt;'a&gt;","synthetic":true,"types":[]},{"text":"impl&lt;'a&gt; UnwindSafe for Day06Initial&lt;'a&gt;","synthetic":true,"types":[]}];
 implementors["day07"] = [{"text":"impl UnwindSafe for Day07Entry","synthetic":true,"types":[]},{"text":"impl&lt;'a&gt; UnwindSafe for Day07Initial&lt;'a&gt;","synthetic":true,"types":[]}];
 implementors["day08"] = [{"text":"impl UnwindSafe for Day08Entry","synthetic":true,"types":[]},{"text":"impl UnwindSafe for Instruction","synthetic":true,"types":[]},{"text":"impl&lt;'a&gt; UnwindSafe for Day08Initial&lt;'a&gt;","synthetic":true,"types":[]}];
+implementors["day09"] = [{"text":"impl&lt;'a&gt; UnwindSafe for Day09Initial&lt;'a&gt;","synthetic":true,"types":[]}];
 if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()

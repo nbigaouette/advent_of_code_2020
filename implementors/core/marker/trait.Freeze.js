@@ -7,4 +7,5 @@ implementors["day05"] = [{"text":"impl&lt;'a&gt; Freeze for Day05Entry&lt;'a&gt;
 implementors["day06"] = [{"text":"impl Freeze for Day06Entry","synthetic":true,"types":[]},{"text":"impl&lt;'a&gt; Freeze for Day06Bits&lt;'a&gt;","synthetic":true,"types":[]},{"text":"impl&lt;'a&gt; Freeze for Day06Initial&lt;'a&gt;","synthetic":true,"types":[]}];
 implementors["day07"] = [{"text":"impl Freeze for Day07Entry","synthetic":true,"types":[]},{"text":"impl&lt;'a&gt; Freeze for Day07Initial&lt;'a&gt;","synthetic":true,"types":[]}];
 implementors["day08"] = [{"text":"impl Freeze for Day08Entry","synthetic":true,"types":[]},{"text":"impl Freeze for Instruction","synthetic":true,"types":[]},{"text":"impl&lt;'a&gt; Freeze for Day08Initial&lt;'a&gt;","synthetic":true,"types":[]}];
+implementors["day09"] = [{"text":"impl&lt;'a&gt; Freeze for Day09Initial&lt;'a&gt;","synthetic":true,"types":[]}];
 if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()
